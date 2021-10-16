@@ -1,0 +1,42 @@
+data:
+    name: 'hpatches'
+    export_dir: './export/descriptors/hpatches/'
+    alteration: 'i'  # 'all' 'i' 'v'
+    preprocessing:
+        resize: [480, 640]  # False for coco
+    homography_adaptation:
+        num: 0
+        aggregation: 'sum'
+        filter_counts: 10
+        homographies:
+            translation: true
+            rotation: true
+            scaling: true
+            perspective: true
+            scaling_amplitude: 0.1
+            perspective_amplitude_x: 0.2
+            perspective_amplitude_y: 0.2
+            patch_ratio: 0.85
+            max_angle: 1.57
+            allow_artifacts: false
+model:
+    name: 'superpoint'
+    grid_size: 8
+    pretrained_model: 'none'
+    nms: 8
+    detection_threshold: 0.001 # 1/65
+    topk: 1000
+    learning_rate: 0.001
+    backbone:
+        backbone_type: 'VGG' #ResNetFPN
+        vgg:
+            channels: [64,64,64,64,128,128,128,128]
+        resnetfpn:
+            initial_dim: 128
+            block_dims: [128,128,128]
+    det_head: #detector head
+        feat_in_dim: 128
+    des_head: #descriptor head
+        feat_in_dim: 128
+        feat_out_dim: 256
+eval_iter: 600

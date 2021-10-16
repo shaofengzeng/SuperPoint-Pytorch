@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="xp0@10.0.8.62:22" autoUploadExternalChanges="true">
+    <serverData>
+      <paths name="root@10.0.8.62:8022">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="xp0@10.0.8.62:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/xp0/workdir/kp/SuperPoint-Pytorch" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
