@@ -1,5 +1,5 @@
-# SuperPoint-Pytorch
-SuperPoint: Self-Supervised Interest Point Detection and Description: A Pure Pytorch Implementation  
+# SuperPoint-Pytorch (A Pure Pytorch Implementation)
+SuperPoint: Self-Supervised Interest Point Detection and Description  
 
 # Thanks  
 This work is based on:  
