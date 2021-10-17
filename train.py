@@ -74,10 +74,8 @@ def do_eval(model, dataloader, config, device):
         prob, desc, prob_warp, desc_warp = None, None, None, None
         raw_outputs = model(data['raw'])
 
-        if 'warp' in data:
+        if config['model']['name'] == 'superpoint':
             warp_outputs = model(data['warp'])
-
-        if 'warp' in data and 'desc_dict' in raw_outputs:
             prob, desc, prob_warp, desc_warp = raw_outputs['det_info'], \
                                                raw_outputs['desc_info'], \
                                                warp_outputs['det_info'], \
@@ -94,39 +92,7 @@ def do_eval(model, dataloader, config, device):
     return mean_loss
 
 
-def visualize(model, img, config, device='cpu'):
-    """
-    :param img: cv2 Gray, [H,W]
-    :param model:
-    :param dataloader:
-    :param config:
-    :return:
-    """
-    point_size = 1
-    point_color = (0, 255, 0)  # BGR
-    thickness = 4  # 可以为 0 、4、8
 
-    model.to(device).eval()
-    img = torch.tensor(img[np.newaxis,np.newaxis,:,:], device=device, dtype=torch.float32)
-    img = img/255.
-    res = model(img)  # output {'logits':[B,65,H/8,W/8],'prob':[B,H,W]}
-    prob = res['prob']
-    prob = box_nms(prob, size=4, min_prob=0.015, keep_top_k=0)
-
-    masks = (prob>=config['detection_threshold']).int()
-    masks = masks.cpu().numpy()
-    ##
-    images = torch.clip((img*255.), 0, 255).to(torch.uint8)
-    images = images.cpu().numpy().transpose(0,2,3,1)
-    for c, (im, m) in enumerate(zip(images, masks)):
-        im = np.concatenate((im, im, im), axis=-1)
-        pts = np.where(m==1)
-        pts = np.stack(pts).T
-        pts = pts.tolist()
-        for p in pts:
-            cv2.circle(im, tuple([p[1],p[0]]), point_size, point_color, thickness)
-        #cv2.imshow('result.png',im)
-        cv2.imwrite('result.png', im)
 
 
 if __name__=='__main__':
