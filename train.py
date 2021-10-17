@@ -92,9 +92,6 @@ def do_eval(model, dataloader, config, device):
     return mean_loss
 
 
-
-
-
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
