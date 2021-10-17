@@ -6,7 +6,7 @@ from pathlib import Path
 from torch.utils.data import Dataset
 from utils.params import dict_update, parse_primitives
 from utils.keypoint_op import compute_keypoint_map
-from dataset import synthetic_dataset
+from dataset.utils import synthetic_dataset
 from dataset.utils.homographic_augmentation import homographic_aug_pipline
 from dataset.utils.photometric_augmentation import PhotoAugmentor
 
@@ -208,7 +208,6 @@ class SyntheticShapes(Dataset):
 
 if __name__=="__main__":
     import yaml
-    import matplotlib.pyplot as plt
     from torch.utils.data import DataLoader
 
     config_file = '../config/magic_point_train.yaml'

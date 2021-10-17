@@ -110,6 +110,7 @@ if __name__=='__main__':
 
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
+    data_loaders = None
     if config['data']['name']=='coco':
         datasets = {k:COCODataset(config['data'], is_train=True if k=='train' else False, device=device) for k in ['test','train']}
         data_loaders = {k:DataLoader(datasets[k],
