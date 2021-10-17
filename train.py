@@ -136,4 +136,3 @@ if __name__=='__main__':
 
     train_eval(model, data_loaders, config)
     print('Done')
-
