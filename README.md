@@ -8,7 +8,7 @@ This work is based on:
 - [Kornia](https://kornia.github.io/)  
 
 # Performance or training log
-- Detection repeatability on Hpatches: 0.664
+- MagicPoint Detection repeatability on Hpatches: 0.664
 
 
 # New update (20211016)
