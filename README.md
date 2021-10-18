@@ -5,17 +5,22 @@ SuperPoint: Self-Supervised Interest Point Detection and Description
 This work is based on:  
 - Tensorflow implementation by [Rémi Pautrat and Paul-Edouard Sarlin](https://github.com/rpautrat/SuperPoint)  
 - Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork). 
-- [Kornia](https://kornia.github.io/)
+- [Kornia](https://kornia.github.io/)  
+
+# Performance or training log
+- Detection repeatability on Hpatches: 0.664
+
 
 # New update (20211016)
-- Train your MagicPoint and SuperPoint
+- Train your MagicPoint and SuperPoint  
+*Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py*
 
 
 # New update (20210904)
 * You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint) with pytorch.   
-* Main Steps:
+* Main steps:
     - 1 Define network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
-    - 2 Set parameter eps=1e-3 for all BatchNormalization functions
+    - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
     - 3 Load pretrained weight [superpoint_bn.pth](./superpoint_bn.pth) and run forward propagation
  
 
@@ -37,7 +42,7 @@ This work is based on:
     |   |   |--H_1_2
     |   |-- ...
     ```
-    You can create *soft links* if you already have *coco, hpatches* data sets, the command is,
+    You can create *soft links* if you already have *coco, hpatches* data sets, the commands are,
     ```
     cd data
     ln -s dir_to_coco ./coco
