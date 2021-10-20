@@ -9,7 +9,7 @@ This work is based on:
 
 # Performance or training log
 - MagicPoint Detection repeatability on Hpatches: 0.664
-- SuperPoint Homography estimation correctness on Hpatches: 0.715
+- SuperPoint Homography estimation correctness on Hpatches: 0.715 
 
 # New update (20211016)
 - Train your MagicPoint and SuperPoint  
