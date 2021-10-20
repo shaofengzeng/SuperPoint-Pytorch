@@ -7,9 +7,9 @@ This work is based on:
 - Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork). 
 - [Kornia](https://kornia.github.io/)  
 
-# Performance or training log
+# Our performance
 - MagicPoint Detection repeatability on Hpatches: 0.664
-- SuperPoint Homography estimation correctness on Hpatches: 0.715 
+- SuperPoint Homography estimation correctness on Hpatches: 0.715
 
 # New update (20211016)
 - Train your MagicPoint and SuperPoint  
