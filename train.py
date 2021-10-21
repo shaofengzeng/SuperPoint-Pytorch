@@ -1,13 +1,14 @@
 #-*-coding:utf8-*-
 import torch
+from torch.optim.lr_scheduler import StepLR
 import numpy as np
 import cv2
 import os
 import yaml
 import argparse
 from tqdm import tqdm
-from dataset.synthetic_shapes import SyntheticShapes
 from dataset.coco import COCODataset
+from dataset.synthetic_shapes import SyntheticShapes
 from torch.utils.data import DataLoader
 from model.magic_point import MagicPoint
 from model.superpoint_bn import SuperPointBNNet
@@ -17,7 +18,7 @@ from solver.nms import box_nms
 
 def train_eval(model, dataloader, config):
     optimizer = torch.optim.Adam(model.parameters(), lr=config['solver']['base_lr'])
-    #lr_sch = StepLR(optimizer, step_size=10000,gamma=0.5)
+    # lr_sch = StepLR(optimizer, step_size=60000, gamma=0.5)
 
     # start training
     for epoch in range(config['solver']['epoch']):
@@ -48,13 +49,13 @@ def train_eval(model, dataloader, config):
             #lr_sch.step()
 
             # for every 1000 images, print progress and visualize the matches
-            if i % 500 == 0:
+            if i % 1000 == 0:
                 print('Epoch [{}/{}], Step [{}/{}], LR [{}], Loss: {:.3f}'
                       .format(epoch, config['solver']['epoch'], i, len(dataloader['train']),
                               optimizer.state_dict()['param_groups'][0]['lr'], np.mean(mean_loss)))
                 mean_loss = []
             # do evaluation
-            if (i%10000==0 and i!=0) or (i+1)==len(dataloader['train']):
+            if (i % 118300 == 0 and i != 0) or (i + 1) == len(dataloader['train']):
                 eval_loss = do_eval(model, dataloader['test'], config, device)
                 model.train()
                 if eval_loss < best_loss:
@@ -92,6 +93,41 @@ def do_eval(model, dataloader, config, device):
     return mean_loss
 
 
+def visualize(model, img, config, device='cpu'):
+    """
+    :param img: cv2 Gray, [H,W]
+    :param model:
+    :param dataloader:
+    :param config:
+    :return:
+    """
+    point_size = 1
+    point_color = (0, 255, 0)  # BGR
+    thickness = 4  # 可以为 0 、4、8
+
+    model.to(device).eval()
+    img = torch.tensor(img[np.newaxis, np.newaxis, :, :], device=device, dtype=torch.float32)
+    img = img / 255.
+    res = model(img)  # output {'logits':[B,65,H/8,W/8],'prob':[B,H,W]}
+    prob = res['prob']
+    prob = box_nms(prob, size=4, min_prob=0.015, keep_top_k=0)
+
+    masks = (prob >= config['detection_threshold']).int()
+    masks = masks.cpu().numpy()
+    ##
+    images = torch.clip((img * 255.), 0, 255).to(torch.uint8)
+    images = images.cpu().numpy().transpose(0, 2, 3, 1)
+    for c, (im, m) in enumerate(zip(images, masks)):
+        im = np.concatenate((im, im, im), axis=-1)
+        pts = np.where(m == 1)
+        pts = np.stack(pts).T
+        pts = pts.tolist()
+        for p in pts:
+            cv2.circle(im, tuple([p[1], p[0]]), point_size, point_color, thickness)
+        # cv2.imshow('result.png',im)
+        cv2.imwrite('result.png', im)
+
+
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
@@ -100,9 +136,9 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     config_file = args.config
-    assert(os.path.exists(config_file))
+    assert (os.path.exists(config_file))
     ##
-    with open(config_file,'r') as fin:
+    with open(config_file, 'r') as fin:
         config = yaml.safe_load(fin)
 
     if not os.path.exists(config['solver']['save_dir']):
@@ -111,22 +147,25 @@ if __name__=='__main__':
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
     data_loaders = None
-    if config['data']['name']=='coco':
-        datasets = {k:COCODataset(config['data'], is_train=True if k=='train' else False, device=device) for k in ['test','train']}
-        data_loaders = {k:DataLoader(datasets[k],
-                                     config['solver']['{}_batch_size'.format(k)],
-                                     collate_fn=datasets[k].batch_collator,
-                                     shuffle=True) for k in ['train','test']}
-    elif config['data']['name']=='synthetic':
+    if config['data']['name'] == 'coco':
+        datasets = {k: COCODataset(config['data'], is_train=True if k == 'train' else False, device=device) for k in
+                    ['test', 'train']}
+        data_loaders = {k: DataLoader(datasets[k],
+                                      config['solver']['{}_batch_size'.format(k)],
+                                      collate_fn=datasets[k].batch_collator,
+                                      shuffle=True) for k in ['train', 'test']}
+    elif config['data']['name'] == 'synthetic':
         datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
-                        'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-        data_loaders = {'train': DataLoader(datasets['train'], batch_size=16, shuffle=True, collate_fn=datasets['train'].batch_collator),
-                       'test': DataLoader(datasets['test'], batch_size=16, shuffle=False, collate_fn=datasets['test'].batch_collator)}
+                    'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
+        data_loaders = {'train': DataLoader(datasets['train'], batch_size=16, shuffle=True,
+                                            collate_fn=datasets['train'].batch_collator),
+                        'test': DataLoader(datasets['test'], batch_size=16, shuffle=False,
+                                           collate_fn=datasets['test'].batch_collator)}
 
-    if config['model']['name']=='superpoint':
+    if config['model']['name'] == 'superpoint':
         model = SuperPointBNNet(config['model'], device=device)
     else:
-        model = MagicPoint(config['model'],device=device)
+        model = MagicPoint(config['model'], device=device)
 
     if os.path.exists(config['model']['pretrained_model']):
         model.load_state_dict(torch.load(config['model']['pretrained_model']))
@@ -134,3 +173,4 @@ if __name__=='__main__':
 
     train_eval(model, data_loaders, config)
     print('Done')
+

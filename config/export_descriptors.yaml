@@ -1,7 +1,8 @@
 data:
     name: 'hpatches'
-    export_dir: './export/descriptors/hpatches/'
-    alteration: 'i'  # 'all' 'i' 'v'
+    data_dir: './data/hpatches'
+    export_dir: './data/descriptors/hpatches/'
+    alteration: 'all'  # 'all' 'i' 'v'
     preprocessing:
         resize: [480, 640]  # False for coco
     homography_adaptation:
@@ -22,9 +23,9 @@ data:
 model:
     name: 'superpoint'
     grid_size: 8
-    pretrained_model: 'none'
+    pretrained_model: './export/sp_0_1.5483.pth'
     nms: 8
-    detection_threshold: 0.001 # 1/65
+    det_thresh: 0.001 # 1/65
     topk: 1000
     learning_rate: 0.001
     backbone:

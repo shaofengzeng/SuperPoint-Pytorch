@@ -26,24 +26,23 @@ if __name__ == '__main__':
     net.to(device).eval()
 
     ##
-    for i, data in tqdm(enumerate(p_dataloader)):
-        pred1 = net(data['img'])
-        pred2 = net(data['warp_img'])
+    with torch.no_grad():
+        for i, data in tqdm(enumerate(p_dataloader)):
+            pred1 = net(data['img'])
+            pred2 = net(data['warp_img'])
 
-        pred = {'prob': pred1['det']['prob_nms'],
-                'warped_prob': pred2['prob_nms'],
-                'desc': pred1['descriptors'],
-                'warped_desc': pred2['descriptors'],
-                'homography': data['homography']}
+            pred = {'prob': pred1['det_info']['prob_nms'],
+                    'warped_prob': pred2['det_info']['prob_nms'],
+                    'desc': pred1['desc_info']['desc'],
+                    'warped_desc': pred2['desc_info']['desc'],
+                    'homography': data['homography']}
 
-        if not ('name' in data):
-            pred.update(data)
-        # to numpy
-        pred = {k: v.cpu().numpy().squeeze() for k, v in pred.items()}
-        filename = data['name'] if 'name' in data else str(i)
-        filepath = os.path.join(output_dir, '{}.npz'.format(filename))
-        np.savez_compressed(filepath, **pred)
-    print('Done')
-
-
-
+            if not ('name' in data):
+                pred.update(data)
+            # to numpy
+            pred = {k: v.cpu().numpy().squeeze() for k, v in pred.items()}
+            pred = {k: np.transpose(v, (1, 2, 0)) for k, v in pred.items() if k == 'warped_desc' or k == 'desc'}
+            filename = data['name'] if 'name' in data else str(i)
+            filepath = os.path.join(output_dir, '{}.npz'.format(filename))
+            np.savez_compressed(filepath, **pred)
+        print('Done')
