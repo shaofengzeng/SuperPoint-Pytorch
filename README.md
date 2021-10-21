@@ -8,12 +8,12 @@ This work is based on:
 - [Kornia](https://kornia.github.io/)  
 
 # Our performance
-- MagicPoint Detection repeatability on Hpatches: 0.664
-- SuperPoint Homography estimation correctness on Hpatches: 0.715
-
+- MagicPoint Detection Repeatability on Hpatches: 0.664
+- SuperPoint Homography Estimation Correctness on Hpatches: 0.715  
+(**If you can achieve better results, please let me know, thanks!**)
 # New update (20211016)
-- Train your MagicPoint and SuperPoint  
-*Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py*
+- Train your MagiqqqcPoint and SuperPoint  
+*Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py*
 
 
 # New update (20210904)
