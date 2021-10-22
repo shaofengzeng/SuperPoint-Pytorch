@@ -32,7 +32,7 @@ This work is based on:
     |  |-- train2017
     |  |     |-- a.jpg
     |  |     |-- ...
-    |  `-- test2017
+    |  --- test2017
     |        |-- b.jpg
     |        |-- ...
     |-- hpatches
