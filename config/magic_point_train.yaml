@@ -51,10 +51,9 @@ model:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
         feat_in_dim: 128
-    des_head: #descriptor head
+    des_head: #descriptor head,ignore
         feat_in_dim: 128
         feat_out_dim: 256
-
 solver:
     epoch: 2
     base_lr: 0.01
