@@ -198,10 +198,10 @@ class SyntheticShapes(Dataset):
             batch['raw']['mask'].append(item['raw']['mask'])
             batch['homography'].append(item['homography'])
         ##
-        batch['raw']['img'] = torch.stack(batch['raw']['img']).unsqueeze(dim=1)
-        batch['raw']['kpts_map'] = torch.stack(batch['raw']['kpts_map'])
-        batch['raw']['mask'] = torch.stack(batch['raw']['mask'])
-        batch['homography'] = torch.stack(batch['homography'])
+        batch['raw']['img'] = torch.stack(batch['raw']['img']).unsqueeze(dim=1)#BCHW
+        batch['raw']['kpts_map'] = torch.stack(batch['raw']['kpts_map'])#BHW
+        batch['raw']['mask'] = torch.stack(batch['raw']['mask'])#BHW
+        batch['homography'] = torch.stack(batch['homography'])#BHW
         return batch
 
 
