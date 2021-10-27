@@ -11,7 +11,7 @@ This work is based on:
 # Our performance
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
-- SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint,**If you can achieve better results, please let me know, thanks!**)   
+- SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint, **If you can achieve better results, please let me know, thanks!**)   
 - Some Training Tricks  
 a. Set better parameter, especially for loss/lambda_loss in *.yaml  
 b. Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py    
@@ -31,9 +31,9 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
 ``` 
 
 # New update (20210904)
-* You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint) with pytorch.   
+* You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performance with pytorch.   
 * Main steps:
-    - 1 Define network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
+    - 1 Define the network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
     - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
     - 3 Load pretrained weight [superpoint_bn.pth](./superpoint_bn.pth) and run forward propagation
  
