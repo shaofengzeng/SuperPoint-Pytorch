@@ -31,7 +31,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
 ``` 
 
 # New update (20210904)
-* You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performance with pytorch.   
+* You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performances with pytorch.   
 * Main steps:
     - 1 Define the network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
     - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
