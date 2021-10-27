@@ -11,7 +11,15 @@ This work is based on:
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
 - SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint)    
-(**If you can achieve better results, please let me know, thanks!**)
+(**If you can achieve better results, please let me know, thanks!**)  
+- Some Training Tricks  
+a. Set better parameter, especially for loss/lambda_loss in *.yaml  
+b. Uncomment the normalization operations in model/modules/cnn/cnn_heads.py
+```
+   out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
+   out = out.div(torch.unsqueeze(out_norm, 1))# Divide by norm to normalize.
+```
+
 # New update (20211016)
 - Train your MagiqqqcPoint and SuperPoint  
 *Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py*
