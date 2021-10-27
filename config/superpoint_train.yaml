@@ -45,9 +45,6 @@ model:
         backbone_type: 'VGG' #ResNetFPN
         vgg:
             channels: [64,64,64,64,128,128,128,128]
-        resnetfpn:
-            initial_dim: 128
-            block_dims: [128,128,128]
     det_head: #detector head
         feat_in_dim: 128
     des_head: #descriptor head
