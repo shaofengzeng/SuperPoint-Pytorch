@@ -14,7 +14,7 @@ class VGGBackbone(torch.nn.Module):
 
         self.block1_1 = torch.nn.Sequential(
             torch.nn.Conv2d(input_channel, channels[0], kernel_size=3, stride=1, padding=1),
-            torch.nn.ReLU(),
+            torch.nn.ReLU(inplace=True),
             torch.nn.BatchNorm2d(channels[0]),
         )
 

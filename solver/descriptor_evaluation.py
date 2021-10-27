@@ -3,8 +3,6 @@ import cv2
 from os import path as osp
 from glob import glob
 
-from superpoint.settings import EXPER_PATH
-
 
 def get_paths(exper_name):
     """
@@ -153,7 +151,7 @@ def get_homography_matches(exper_name, keep_k_points=1000,
     for path in paths[:num_images]:
         data = np.load(path)
         output = compute_homography(data, keep_k_points, correctness_thresh, orb)
-        output['image1'] = data['image']
-        output['image2'] = data['warped_image']
+        output['image1'] = data['img']
+        output['image2'] = data['warp_img']
         outputs.append(output)
     return outputs

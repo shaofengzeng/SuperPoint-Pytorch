@@ -11,7 +11,7 @@ class DetectorHead(torch.nn.Module):
 
         ##
         self.convPa = torch.nn.Conv2d(input_channel, 256, 3, stride=1, padding=1)
-        self.relu = torch.nn.ReLU(True)
+        self.relu = torch.nn.ReLU(inplace=True)
         self.bnPa = torch.nn.BatchNorm2d(256)
         ##
         self.convPb = torch.nn.Conv2d(256, pow(grid_size, 2)+1, kernel_size=1, stride=1, padding=0)
@@ -21,7 +21,11 @@ class DetectorHead(torch.nn.Module):
 
     def forward(self, x):
         out = self.bnPa(self.relu(self.convPa(x)))
-        out = self.bnPb(self.convPb(out))  # (B,65,H,W)
+        out = self.bnPb(self.convPb(out))  #(B,65,H,W)
+
+        # out = self.relu(self.convPa(x))
+        # out = self.convPb(out)  # (B,65,H,W)
+
         #
         prob = self.softmax(out)
         prob = prob[:, :-1, :, :]  # remove dustbin,[B,64,H,W]
@@ -38,7 +42,7 @@ class DescriptorHead(torch.nn.Module):
         self.grid_size = grid_size
         #
         self.convDa = torch.nn.Conv2d(input_channel, 256, kernel_size=3, stride=1, padding=1)
-        self.relu = torch.nn.ReLU(True)
+        self.relu = torch.nn.ReLU(inplace=True)
         self.bnDa = torch.nn.BatchNorm2d(256)
 
         self.convDb = torch.nn.Conv2d(256, output_channel, kernel_size=1, stride=1, padding=0)
@@ -47,6 +51,9 @@ class DescriptorHead(torch.nn.Module):
     def forward(self, x):
         out = self.bnDa(self.relu(self.convDa(x)))
         out = self.bnDb(self.convDb(out))
+
+        # out = self.relu(self.convDa(x))
+        # out = self.convDb(out)
 
         # out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
         # out = out.div(torch.unsqueeze(out_norm, 1))# Divide by norm to normalize.
