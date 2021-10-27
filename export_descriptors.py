@@ -16,7 +16,7 @@ if __name__ == '__main__':
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     ##
-    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     p_dataset = PatchesDataset(config['data'], device=device)
     p_dataloader = DataLoader(p_dataset, batch_size=1, shuffle=False, collate_fn=p_dataset.batch_collator)
@@ -41,8 +41,11 @@ if __name__ == '__main__':
                 pred.update(data)
             # to numpy
             pred = {k: v.cpu().numpy().squeeze() for k, v in pred.items()}
-            pred = {k: np.transpose(v, (1, 2, 0)) for k, v in pred.items() if k == 'warped_desc' or k == 'desc'}
+            pred = {k: np.transpose(v,(1,2,0)) for k, v in pred.items() if k=='warped_desc' or k=='desc'}
             filename = data['name'] if 'name' in data else str(i)
             filepath = os.path.join(output_dir, '{}.npz'.format(filename))
             np.savez_compressed(filepath, **pred)
         print('Done')
+
+
+

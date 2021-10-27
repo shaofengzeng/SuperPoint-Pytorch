@@ -154,7 +154,7 @@ if __name__=='__main__':
     image_list = os.listdir(config['data']['src_image_path'])
     image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
 
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
 
     net = MagicPoint(config['model'], input_channel=1, grid_size=8,device=device)
     net.load_state_dict(torch.load(config['model']['pretrained_model']))

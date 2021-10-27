@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
-from pathlib import Path
 import os
-from superpoint.settings import EXPER_PATH
-import solver.detector_evaluation as ev
+import utils.detector_evaluation as ev
 from utils.plt import plot_imgs
 
 def get_true_keypoints(exper_name, prob_thresh=0.5):
@@ -26,7 +24,7 @@ def get_true_keypoints(exper_name, prob_thresh=0.5):
 
     true_keypoints = []
     for i in range(5):
-        path = Path(EXPER_PATH, "outputs", exper_name, str(i) + ".npz")
+        path = os.path.join(exper_name, str(i) + ".npz")
         data = np.load(path)
         shape = data['warped_prob'].shape
 
@@ -59,7 +57,7 @@ def select_top_k(prob, thresh=0, num=300):
 
 if __name__=='__main__':
 
-    experiments = ['./export/repeatibility/hpatches/']
+    experiments = ['./data/repeatibility/superpoint//hpatches/']
     confidence_thresholds = [0.015, ]
 
     ## show keypoints
@@ -84,17 +82,17 @@ if __name__=='__main__':
         repeatability = ev.compute_repeatability(exp, keep_k_points=300, distance_thresh=3)
         print('> {}: {}'.format(exp, repeatability))
 
-    true_keypoints = get_true_keypoints('magic-point_coco_repeatability', 0.015)
-    for i in range(3):
-        e = 'magic-point_coco_repeatability'
-        thresh = 0.015
-        path = Path(EXPER_PATH, "outputs", e, str(i) + ".npz")
-        d = np.load(path)
-
-        points1 = np.where(d['prob'] > thresh)
-        im1 = draw_keypoints(d['image'][..., 0] * 255, points1, (0, 255, 0)) / 255.
-
-        points2 = true_keypoints[i]
-        im2 = draw_keypoints(d['warped_image'][..., 0] * 255, points2, (0, 255, 0)) / 255.
-
-        plot_imgs([im1, im2], titles=['Original', 'Original points warped'], dpi=200, cmap='gray')
+    # true_keypoints = get_true_keypoints('superpoint_hpatches_repeatability', 0.015)
+    # for i in range(3):
+    #     e = 'superpoint_hpatches_repeatability'
+    #     thresh = 0.015
+    #     path = os.path.join("./", e, str(i) + ".npz")
+    #     d = np.load(path)
+    #
+    #     points1 = np.where(d['prob'] > thresh)
+    #     im1 = draw_keypoints(d['image'][..., 0] * 255, points1, (0, 255, 0)) / 255.
+    #
+    #     points2 = true_keypoints[i]
+    #     im2 = draw_keypoints(d['warped_image'][..., 0] * 255, points2, (0, 255, 0)) / 255.
+    #
+    #     plot_imgs([im1, im2], titles=['Original', 'Original points warped'], dpi=200, cmap='gray')
