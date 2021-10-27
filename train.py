@@ -70,8 +70,8 @@ def train_eval(model, dataloader, config):
 @torch.no_grad()
 def do_eval(model, dataloader, config, device):
     model.eval()
-    mean_loss = 0.
-    for i, data in tqdm(enumerate(dataloader)):
+    mean_loss = []
+    for ind, data in tqdm(enumerate(dataloader)):
         prob, desc, prob_warp, desc_warp = None, None, None, None
         raw_outputs = model(data['raw'])
 
@@ -87,8 +87,8 @@ def do_eval(model, dataloader, config, device):
         # compute loss
         loss = loss_func(config['solver'], data, prob, desc,
                          prob_warp, desc_warp, device)
-        mean_loss += loss.item()
-    mean_loss /= len(dataloader)
+        mean_loss.append(loss.item())
+    mean_loss = np.mean(mean_loss)
 
     return mean_loss
 
