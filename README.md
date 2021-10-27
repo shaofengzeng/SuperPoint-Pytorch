@@ -14,12 +14,19 @@ This work is based on:
 (**If you can achieve better results, please let me know, thanks!**)  
 - Some Training Tricks  
 a. Set better parameter, especially for loss/lambda_loss in *.yaml  
-b. Uncomment the normalization operations in model/modules/cnn/cnn_heads.py
+b. Comment/Uncomment the normalization operations in model/modules/cnn/cnn_heads.py or in solver/loss.py   
 ```
-   out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
-   out = out.div(torch.unsqueeze(out_norm, 1))# Divide by norm to normalize.
+out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
+out = out.div(torch.unsqueeze(out_norm, 1))# Divide by norm to normalize.
+```      
 ```
-
+dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
+                                              p=2,
+                                              dim=3), [batch_size, Hc, Wc, Hc, Wc])
+dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
+                                              p=2,
+                                              dim=1), [batch_size, Hc, Wc, Hc, Wc])
+```
 # New update (20211016)
 - Train your MagiqqqcPoint and SuperPoint  
 *Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py*
