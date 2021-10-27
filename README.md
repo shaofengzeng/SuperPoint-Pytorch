@@ -1,6 +1,7 @@
 # SuperPoint-Pytorch (A Pure Pytorch Implementation)
 SuperPoint: Self-Supervised Interest Point Detection and Description  
 
+
 # Thanks  
 This work is based on:  
 - Tensorflow implementation by [Rémi Pautrat and Paul-Edouard Sarlin](https://github.com/rpautrat/SuperPoint)  
@@ -64,8 +65,8 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
     - 2.1 Train MagicPoint: `python train.py ./config/magic_point_train.yaml`
     - 2.2 Export coco labels: `python homo_export_labels.py`
     - 2.3 Train MagicPoint on coco labels data set (export by step 2.2)   
-    `python train.py ./config/superpoint_train.py`   
-    - 2.4 Train SuperPoint.py: `python train.py ./config/superpoint_train.py`
+    `python train.py ./config/magic_point_train.py #with correct data dirs` 
+    - 2.4 Train SuperPoint.py: `python train.py ./config/superpoint_train.py #with correct data dirs`
     - others. Validate detection repeatability:   
     ```
     python export detections_repeatability.py   
