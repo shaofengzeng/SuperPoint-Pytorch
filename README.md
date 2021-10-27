@@ -10,8 +10,7 @@ This work is based on:
 # Our performance
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
-- SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint)    
-(**If you can achieve better results, please let me know, thanks!**)  
+- SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint,**If you can achieve better results, please let me know, thanks!**)   
 - Some Training Tricks  
 a. Set better parameter, especially for loss/lambda_loss in *.yaml  
 b. Comment/Uncomment the normalization operations in model/modules/cnn/cnn_heads.py or in solver/loss.py   
