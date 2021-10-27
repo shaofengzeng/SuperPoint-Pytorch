@@ -3,21 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="745edf44-5f77-4e7c-ad9f-cd89cecee351" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compute_desc_eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/compute_desc_eval.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compute_repeatability.py" beforeDir="false" afterPath="$PROJECT_DIR$/compute_repeatability.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/export_descriptors.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/export_descriptors.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/export_detections.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/export_detections.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/magic_point_repeatability.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/magic_point_repeatability.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/magic_point_train.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/magic_point_train.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/superpoint_train.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/superpoint_train.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/export_descriptors.py" beforeDir="false" afterPath="$PROJECT_DIR$/export_descriptors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/export_detections.py" beforeDir="false" afterPath="$PROJECT_DIR$/export_detections.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/export_detections_repeatability.py" beforeDir="false" afterPath="$PROJECT_DIR$/export_detections_repeatability.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/modules/cnn/cnn_heads.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/modules/cnn/cnn_heads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/modules/cnn/vgg_backbone.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/modules/cnn/vgg_backbone.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/solver/descriptor_evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/solver/descriptor_evaluation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/synthetic_shapes.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/synthetic_shapes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dist.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,24 +35,24 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/solver/descriptor_evaluation.py">
+        <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="144" column="20" selection-start-line="144" selection-start-column="20" selection-end-line="144" selection-end-column="20" />
+            <state relative-caret-position="159">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#19#31#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/solver/detector_evaluation.py">
+        <entry file="file://$PROJECT_DIR$/dataset/synthetic_shapes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="216" column="18" lean-forward="true" selection-start-line="216" selection-start-column="18" selection-end-line="216" selection-end-column="18" />
+            <state relative-caret-position="333">
+              <caret line="203" column="62" lean-forward="true" selection-start-line="203" selection-start-column="62" selection-end-line="203" selection-end-column="62" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -86,16 +76,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/config/magic_point_train.yaml" />
         <option value="$PROJECT_DIR$/config/superpoint_train.yaml" />
-        <option value="$PROJECT_DIR$/config/magic_point_repeatability.yaml" />
         <option value="$PROJECT_DIR$/config/export_detections.yaml" />
         <option value="$PROJECT_DIR$/config/export_descriptors.yaml" />
         <option value="$PROJECT_DIR$/model/modules/cnn/cnn_heads.py" />
         <option value="$PROJECT_DIR$/model/modules/cnn/vgg_backbone.py" />
         <option value="$PROJECT_DIR$/model/superpoint_bn.py" />
         <option value="$PROJECT_DIR$/model/magic_point.py" />
-        <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/compute_desc_eval.py" />
         <option value="$PROJECT_DIR$/compute_repeatability.py" />
         <option value="$PROJECT_DIR$/export_descriptors.py" />
@@ -103,6 +90,10 @@
         <option value="$PROJECT_DIR$/export_detections_repeatability.py" />
         <option value="$PROJECT_DIR$/solver/descriptor_evaluation.py" />
         <option value="$PROJECT_DIR$/solver/detector_evaluation.py" />
+        <option value="$PROJECT_DIR$/train.py" />
+        <option value="$PROJECT_DIR$/config/magic_point_train.yaml" />
+        <option value="$PROJECT_DIR$/config/magic_point_repeatability.yaml" />
+        <option value="$PROJECT_DIR$/dataset/synthetic_shapes.py" />
       </list>
     </option>
   </component>
@@ -133,20 +124,12 @@
             <path>
               <item name="SuperPoint-Pytorch" type="b2602c69:ProjectViewProjectNode" />
               <item name="SuperPoint-Pytorch" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
+              <item name="dataset" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="SuperPoint-Pytorch" type="b2602c69:ProjectViewProjectNode" />
               <item name="SuperPoint-Pytorch" type="462c0819:PsiDirectoryNode" />
               <item name="model" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SuperPoint-Pytorch" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SuperPoint-Pytorch" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="cnn" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="SuperPoint-Pytorch" type="b2602c69:ProjectViewProjectNode" />
@@ -252,7 +235,7 @@
       <workItem from="1634974960137" duration="452000" />
       <workItem from="1634992075883" duration="15000" />
       <workItem from="1635215427421" duration="434000" />
-      <workItem from="1635293905305" duration="2372000" />
+      <workItem from="1635293905305" duration="4084000" />
     </task>
     <task id="LOCAL-00001" summary="Edit 'A Pure Pytorch Implementation'">
       <created>1634378692297</created>
@@ -363,7 +346,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24955000" />
+    <option name="totallyTimeSpent" value="26667000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -379,10 +362,10 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" sideWeight="0.50110865" side_tool="true" weight="0.17202573" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49889135" visible="true" weight="0.2165059" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49889135" visible="true" weight="0.2165059" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
-      <window_info anchor="bottom" id="Terminal" order="1" weight="0.32963374" />
+      <window_info anchor="bottom" id="Terminal" order="1" weight="0.381798" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32963374" />
       <window_info anchor="bottom" id="File Transfer" order="4" weight="0.33407325" />
@@ -390,8 +373,8 @@
       <window_info anchor="bottom" id="Docker" order="6" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="7" />
       <window_info anchor="bottom" id="Find" order="8" />
-      <window_info anchor="bottom" id="Run" order="9" visible="true" weight="0.32963374" />
-      <window_info anchor="bottom" id="Debug" order="10" weight="0.4" />
+      <window_info anchor="bottom" id="Run" order="9" weight="0.41953385" />
+      <window_info active="true" anchor="bottom" id="Debug" order="10" visible="true" weight="0.39955604" />
       <window_info anchor="bottom" id="Cvs" order="11" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="12" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="13" weight="0.32963374" />
@@ -422,8 +405,29 @@
     <option name="LAST_COMMIT_MESSAGE" value="edit some words" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/train.py</url>
+          <line>26</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/magic_point.py</url>
+          <line>30</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dataset/synthetic_shapes.py</url>
+          <line>200</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SuperPoint_Pytorch$train.coverage" NAME="train Coverage Results" MODIFIED="1635294309843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SuperPoint_Pytorch$train.coverage" NAME="train Coverage Results" MODIFIED="1635298100171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dataset/utils/synthetic_dataset.py">
@@ -431,16 +435,6 @@
         <state>
           <folding>
             <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset/synthetic_shapes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1276">
-          <caret line="58" column="24" selection-start-line="58" selection-start-column="24" selection-end-line="58" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -455,38 +449,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/magic_point_train.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="50" column="51" selection-start-line="50" selection-start-column="51" selection-end-line="50" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/superpoint_train.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="46" column="51" selection-start-line="46" selection-start-column="51" selection-end-line="46" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/magic_point_repeatability.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="27" column="51" selection-start-line="27" selection-start-column="51" selection-end-line="27" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/export_detections.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="31" column="51" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/export_descriptors.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="33" column="51" selection-start-line="33" selection-start-column="51" selection-end-line="33" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -501,26 +467,6 @@
           <caret line="36" column="37" lean-forward="true" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/magic_point.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="36" column="30" lean-forward="true" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
-          <folding>
-            <element signature="e#19#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="129" column="38" selection-start-line="129" selection-start-column="38" selection-end-line="129" selection-end-column="38" />
-          <folding>
-            <element signature="e#19#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -592,6 +538,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/solver/detector_evaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="216" column="18" lean-forward="true" selection-start-line="216" selection-start-column="18" selection-end-line="216" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/solver/descriptor_evaluation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
@@ -602,12 +558,88 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/solver/detector_evaluation.py">
+    <entry file="file://$PROJECT_DIR$/config/export_descriptors.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="216" column="18" lean-forward="true" selection-start-line="216" selection-start-column="18" selection-end-line="216" selection-end-column="18" />
+        <state relative-caret-position="282">
+          <caret line="33" column="51" selection-start-line="33" selection-start-column="51" selection-end-line="33" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/remote_sources/1558332267/1543961147/torch/nn/modules/module.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="1050" selection-start-line="1050" selection-end-line="1050" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/remote_sources/1558332267/1543961147/torch/nn/modules/conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="439" selection-start-line="439" selection-end-line="439" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/patch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2772">
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/coco.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2772" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/magic_point_repeatability.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="35" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/magic_point.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="17" column="35" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="35" />
+          <folding>
+            <element signature="e#19#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/magic_point_train.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1210">
+          <caret line="55" column="25" selection-start-line="55" selection-start-column="25" selection-end-line="55" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/superpoint_train.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1012">
+          <caret line="46" column="51" selection-start-line="46" selection-start-column="51" selection-end-line="46" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="e#19#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/synthetic_shapes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="203" column="62" lean-forward="true" selection-start-line="203" selection-start-column="62" selection-end-line="203" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
