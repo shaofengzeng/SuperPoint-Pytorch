@@ -15,7 +15,7 @@ This work is based on:
 - Some Training Tricks  
 a. Set better parameter, especially for loss/lambda_loss in *.yaml  
 b. Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py    
-c. Comment/Uncomment the normalization operations in model/modules/cnn/cnn_heads.py or in solver/loss.py
+c. It seems that the Batch Normalization will cause the loss not converge (this may be the reason why magicleap didn't use BN), so please try to comment/uncomment the normalization in cnn_heads.py, vgg_backbone.py or the following lines in cnn_heads.py and loss.py, 
   
 ```
 out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
@@ -30,7 +30,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
                                               dim=1), [batch_size, Hc, Wc, Hc, Wc])
 ``` 
 
-# New update (20210904)
+# New update (09/04/2021)
 * You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performances with pytorch.   
 * Main steps:
     - 1 Define the network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
