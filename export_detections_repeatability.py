@@ -18,7 +18,7 @@ if __name__=="__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     ##
-    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
     p_dataset = PatchesDataset(config['data'],device=device)
     p_dataloader = DataLoader(p_dataset,batch_size=1,shuffle=False, collate_fn=p_dataset.batch_collator)
