@@ -25,7 +25,7 @@ if __name__ == '__main__':
     net.load_state_dict(torch.load(config['model']['pretrained_model']))
     net.to(device).eval()
 
-    ##
+    ###
     with torch.no_grad():
         for i, data in tqdm(enumerate(p_dataloader)):
             pred1 = net(data['img'])
