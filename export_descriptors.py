@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 pred.update(data)
             # to numpy
             pred = {k: v.cpu().numpy().squeeze() for k, v in pred.items()}
-            pred = {k: np.transpose(v,(1,2,0)) for k, v in pred.items() if k=='warped_desc' or k=='desc'}
+            pred = {k: np.transpose(v,(1,2,0)) if k=='warped_desc' or k=='desc' else v for k, v in pred.items()}
             filename = data['name'] if 'name' in data else str(i)
             filepath = os.path.join(output_dir, '{}.npz'.format(filename))
             np.savez_compressed(filepath, **pred)
