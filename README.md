@@ -12,13 +12,13 @@ This work is based on:
 The performances is different in training and evaluation modes
 For example, in training mode, the loss is about 2.0, while in
 eval mode, the loss is about, for example 2000. This may be
-caused by Batch Normalization.
+caused by batch normalization.
 
 # Our Performance
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
 - Some Training Tricks  
-**a**. Set better parameter, especially for lambda_d, lambda_loss in *.yaml  
+**a**. Set better parameters, especially for lambda_d, lambda_loss in *.yaml  
 **b**. Remember to remove parameter eps=1e-3 for all the BatchNormalization
    functions in model/modules/cnn/\*.py    
 **c**. It seems that the Batch Normalization will cause the loss not converge
