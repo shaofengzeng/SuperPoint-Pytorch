@@ -17,10 +17,10 @@ caused by batch normalization.
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
-- Some Training Tricks  
-**a**. Set better parameters, especially for lambda_d, lambda_loss in *.yaml  
-**b**. Remember to remove parameter eps=1e-3 for all the BatchNorma2d functions
-       in model/modules/cnn/\*.py    
+- Some Training Tricks
+**a**. Remember to remove parameter eps=1e-3 for all the BatchNorma2d functions
+       in model/modules/cnn/\*.py   
+**b**. Set better parameters, especially for lambda_d, lambda_loss in *.yaml     
 **c**. It seems that the Batch Normalization will cause the loss not converge
        (this may be the reason why magicleap didn't use BN),
        so please try to comment/uncomment the normalization in cnn_heads.py,
