@@ -8,10 +8,15 @@ This work is based on:
 - Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork). 
 - [Kornia](https://kornia.github.io/)  
 
-# Our performance
+# Existing Problems
+The performances is different in training and evaluation modes
+For example, in training mode, the loss is about 2.0, while in
+eval mode, the loss is about, for example 2000. This may be
+caused by Batch Normalization.
+
+# Our Performance
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
-- SuperPoint, the best training loss: 1.24 (not as good as rpautrat/superpoint, **If you can achieve better results, please let me know, thanks!**)   
 - Some Training Tricks  
 a. Set better parameter, especially for loss/lambda_loss in *.yaml  
 b. Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py    
@@ -30,7 +35,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
                                               dim=1), [batch_size, Hc, Wc, Hc, Wc])
 ``` 
 
-# New update (09/04/2021)
+# New Update (09/04/2021)
 * You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performances with pytorch.   
 * Main steps:
     - 1 Define the network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
