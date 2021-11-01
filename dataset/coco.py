@@ -2,6 +2,7 @@
 import os
 import glob
 from copy import deepcopy
+from torchvision import transforms
 from torch.utils.data import DataLoader
 from utils.params import dict_update
 from dataset.utils.homographic_augmentation import homographic_aug_pipline
@@ -54,6 +55,7 @@ class COCODataset(torch.utils.data.Dataset):
         else:
             self.samples = self._init_data(config['image_test_path'], config['label_test_path'])
 
+
     def _init_data(self, image_path, label_path=None):
         ##
         if not isinstance(image_path,list):
@@ -94,7 +96,10 @@ class COCODataset(torch.utils.data.Dataset):
         data = {'raw':{'img': img_tensor,
                        'kpts': kpts_tensor,
                        'kpts_map':kpts_map,
-                       'mask':valid_mask}}
+                       'mask':valid_mask},
+                'warp':None,
+                'homography':torch.eye(3,device=self.device)}
+        data['warp'] = deepcopy(data['raw'])
 
         ##
         if self.is_train:
@@ -106,23 +111,19 @@ class COCODataset(torch.utils.data.Dataset):
 
         if photo_enable:
             img_warp = self.photo_augmentor(img.copy())
-            data.update({'warp':{'img': torch.as_tensor(img_warp, dtype=torch.float,device=self.device),
-                                 'kpts': data['raw']['kpts'],
-                                 'kpts_map': data['raw']['kpts_map'],
-                                 'mask': data['raw']['mask']},
-                                 'homography': torch.eye(3,device=self.device)})
+            data['warp']['img'] = torch.as_tensor(img_warp, dtype=torch.float,device=self.device)
 
         if homo_enable and data['raw']['kpts'] is not None:#homographic augmentation
-            # return dict{img:[H,W], point:[N,2], valid_mask:[H,W], homography: [3,3]; tensors}
-            data_warp = homographic_aug_pipline(data['warp']['img'] if 'warp' in data else data['raw']['img'],
-                                                data['warp']['kpts'] if 'warp' in data else data['raw']['kpts'],
+            # return dict{warp:{img:[H,W], point:[N,2], valid_mask:[H,W], homography: [3,3]; tensors}}
+            data_warp = homographic_aug_pipline(data['warp']['img'],
+                                                data['warp']['kpts'],
                                                 self.config['augmentation']['homographic'],
                                                 device=self.device)
             data.update(data_warp)
 
+        ##normalize
         data['raw']['img'] = data['raw']['img']/255.
         data['warp']['img'] = data['warp']['img']/255.
-        #data.update({'img_name':data_path['image']})
 
         return data#img:HW, kpts:N2, kpts_map:HW, valid_mask:HW, homography:HW
 
@@ -166,22 +167,23 @@ if __name__=='__main__':
     with open('../config/superpoint_train.yaml','r') as fin:
         config = yaml.load(fin)
 
-    transformer = PhotoAugmentor(config['data']['augmentation']['photometric'])
     coco = COCODataset(config['data'],True)
     cdataloader = DataLoader(coco,collate_fn=coco.batch_collator,batch_size=1)
 
-    for d in cdataloader:
+    for i,d in enumerate(cdataloader):
+        if i>1:
+            break
         img = (d['raw']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img_warp = (d['warp']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img = cv2.merge([img, img, img])
         img_warp = cv2.merge([img_warp, img_warp, img_warp])
         ##
-        kpts = np.where(d['raw']['kpts_map'].cpu().numpy())
+        kpts = np.where(d['raw']['kpts_map'].squeeze().cpu().numpy())
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)
         for kp in kpts:
             cv2.circle(img, (kp[1], kp[0]), radius=2, color=(255,0,0))
-        kpts = np.where(d['warp']['kpts_map'].cpu().numpy())
+        kpts = np.where(d['warp']['kpts_map'].squeeze().cpu().numpy())
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)
         for kp in kpts:
@@ -189,6 +191,15 @@ if __name__=='__main__':
 
         mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
         warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+
+        img_warp = cv2.resize(img_warp, (img_warp.shape[1]*2,img_warp.shape[0]*2))
+        warp_mask = cv2.resize(warp_mask, (warp_mask.shape[1]*2,warp_mask.shape[0]*2))
+
+        plt.subplot(1,2,1)
+        plt.imshow(img_warp)
+        plt.subplot(1,2,2)
+        plt.imshow(warp_mask)
+        plt.show()
 
         # cv2.imwrite('image.png', img)
         # cv2.imwrite('image_warp.png', img_warp)
