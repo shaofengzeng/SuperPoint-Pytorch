@@ -14,7 +14,7 @@ For example, in training mode, the loss is about 2.0, while in
 eval mode, the loss is about, for example 2000. This may be
 caused by batch normalization.
 
-# Our Performance
+# Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
 - Some Training Tricks  
