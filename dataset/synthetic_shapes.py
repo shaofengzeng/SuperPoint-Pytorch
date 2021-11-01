@@ -140,44 +140,35 @@ class SyntheticShapes(Dataset):
         img = cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)#shape=(h,w)
         pts = np.load(pts_path)  # attention: each point is a (y,x) formated vector
 
-        kp_map, valid_mask, homography = None, None, None
-        #augmentations
-        if 'training' in self.task:
-            if self.config['augmentation']['photometric']['enable']:#image augmentation
-                img = self.photo_aug(img)
-            if self.config['augmentation']['homographic']['enable']:##homographic augmentation
-                # first to tensor
-                img = torch.as_tensor(img[np.newaxis, np.newaxis,:,:],device=self.device, dtype=torch.float32)
-                pts = torch.as_tensor(pts, dtype=torch.float32, device=self.device)
-
-                # img:[1,1,H,W], point:[N,2], valid_mask:1,H,W, homography: 1,3,3; tensors
-                homo_data = homographic_aug_pipline(img, pts, self.config['augmentation']['homographic'], device=self.device)
-
-                img,pts,kp_map,valid_mask,homography = homo_data['warp']['img'],\
-                                                homo_data['warp']['kpts'],\
-                                                homo_data['warp']['kpts_map'],\
-                                                homo_data['warp']['mask'],\
-                                                homo_data['homography']
+        img_tensor = torch.as_tensor(img, device=self.device, dtype=torch.float32)#HW
+        pts = torch.as_tensor(pts, dtype=torch.float32, device=self.device)#N2
+        kp_map = compute_keypoint_map(pts, img_tensor.shape, device=self.device)#HW
+        valid_mask = torch.ones_like(img_tensor)#HW
+        homography = torch.eye(3, device=self.device)#3,3
 
 
-        if 'test' in self.task or self.config['augmentation']['homographic']['enable']==False:#no homography transformation
-            img = torch.as_tensor(img[np.newaxis, np.newaxis, :, :], device=self.device,dtype=torch.float32)
-            pts = torch.as_tensor(pts, dtype=torch.float32, device=self.device)
-            kp_map = compute_keypoint_map(pts, img.shape[2:], device=self.device)
-            valid_mask = torch.ones_like(img).squeeze(dim=1)
-            homography = torch.eye(3, device=self.device)
-
-        img = img/255.
-
-        data = {'raw':{'img':img.squeeze(dim=0),#1,H,W
+        data = {'raw':{'img':img_tensor,#H,W
                        'kpts':pts,#N,2
                        'kpts_map':kp_map,#H,W
-                       'mask':valid_mask.squeeze(dim=0),#H,W
+                       'mask':valid_mask,#H,W
                         },
-                'homography': homography.squeeze(dim=0)  # 3,3 or None
+                'homography': homography}#3,3
 
-                }
-        return data
+        #augmentations
+        if self.config['augmentation']['photometric']['enable']:#image augmentation
+            img_aug = self.photo_aug(img)
+            data['raw']['img'] = torch.as_tensor(img_aug, device=self.device, dtype=torch.float32)
+        if self.config['augmentation']['homographic']['enable']:##homographic augmentation
+            # input format img:[1,1,H,W], point:[N,2]
+            homo_data = homographic_aug_pipline(data['raw']['img'].unsqueeze(0).unsqueeze(0), data['raw']['kpts'],
+                                                self.config['augmentation']['homographic'], device=self.device)
+            data['raw'] = homo_data['warp']
+            data['homography'] = homo_data['homography']
+
+        ##normalize
+        data['raw']['img'] = data['raw']['img']/255.#1,H,w
+
+        return data #img:H,W kpts:N,2 kpts_map:H,W mask:H,W homography:3,3
 
     def batch_collator(self, samples):
         """
@@ -217,9 +208,9 @@ if __name__=="__main__":
 
     syn_datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=1, shuffle=False,
+    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=False,
                                         collate_fn=syn_datasets['train'].batch_collator),
-                    'test': DataLoader(syn_datasets['test'], batch_size=1, shuffle=False,
+                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=False,
                                        collate_fn=syn_datasets['test'].batch_collator)}
     for i, data in enumerate(data_loaders['train']):
         img = data['raw']['img'][0]
