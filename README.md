@@ -9,9 +9,9 @@ This work is based on:
 - [Kornia](https://kornia.github.io/)  
 
 # Existing Problems
-The performances is different in training and evaluation modes
+Different performances in training and evaluation modes.
 For example, in training mode, the loss is about 2.0, while in
-eval mode, the loss is about, for example 2000. This may be
+eval mode, the loss is about 2000!. This may be
 caused by batch normalization.
 
 # Our Performances
