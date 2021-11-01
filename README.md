@@ -18,9 +18,13 @@ caused by Batch Normalization.
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
 - Some Training Tricks  
-a. Set better parameter, especially for loss/lambda_loss in *.yaml  
-b. Remember to remove parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/\*.py    
-c. It seems that the Batch Normalization will cause the loss not converge (this may be the reason why magicleap didn't use BN), so please try to comment/uncomment the normalization in cnn_heads.py, vgg_backbone.py or the following lines in cnn_heads.py and loss.py, 
+**a**. Set better parameter, especially for lambda_d, lambda_loss in *.yaml  
+**b**. Remember to remove parameter eps=1e-3 for all the BatchNormalization
+   functions in model/modules/cnn/\*.py    
+**c**. It seems that the Batch Normalization will cause the loss not converge
+   (this may be the reason why magicleap didn't use BN),
+   so please try to comment/uncomment the normalization in cnn_heads.py,
+   vgg_backbone.py or the following lines in cnn_heads.py and loss.py, 
   
 ```
 out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
