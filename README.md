@@ -71,7 +71,8 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
     ln -s dir_to_coco ./coco
     ```
 * 2 The training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)  
-    - 2.1 Train MagicPoint: `python train.py ./config/magic_point_train.yaml`
+    - 2.1 Train MagicPoint: `python train.py ./config/magic_point_train.yaml`   
+    （Note that you have to delete the directory _./data/synthetic_shapes_ whenever you want to re-generate the synthetic data set）
     - 2.2 Export coco labels: `python homo_export_labels.py #using your data dirs`
     - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)   
     `python train.py ./config/magic_point_train.py #with correct data dirs` 
