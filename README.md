@@ -84,7 +84,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
     python export detections_repeatability.py   
     python compute_repeatability.py
     ```  
-    (NOTE: You have to edit **.yaml* files to run corresponding tasks,
+    (Again: You have to edit **.yaml* files to run corresponding tasks,
      especially for the *path* or *dir* items 
     ```
     model
