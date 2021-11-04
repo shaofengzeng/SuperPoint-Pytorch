@@ -17,7 +17,7 @@ caused by batch normalization.
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint, homography estimation correctness on Hpatches: 0.715
-- Some Training Tricks
+- Some Training Tricks  
 **a**. Remember to remove parameter eps=1e-3 for all the BatchNorma2d functions
        in model/modules/cnn/\*.py   
 **b**. Set better parameters, especially for lambda_d, lambda_loss in *.yaml     
@@ -71,7 +71,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
     ln -s dir_to_coco ./coco
     ```
 * 2 The training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
-    However you'd better to read the scripts first so that you can give correct settings for your envs.   
+    **However you'd better to read the scripts first so that you can give correct settings for your envs.**   
     - 2.1 Train MagicPoint: `python train.py ./config/magic_point_train.yaml`   
      (Note that you have to delete the directory _./data/synthetic_shapes_ 
       whenever you want to regenerate this data set）
