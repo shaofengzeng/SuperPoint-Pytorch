@@ -60,7 +60,7 @@ solver:
     train_batch_size: 16
     test_batch_size: 16
     save_dir: './export/magic_point'
-    model_name: 'sp'
+    model_name: 'mp_syn'
     detection_threshold: 0.015 #0.015
     nms: 4
     grid_size: 8
