@@ -84,12 +84,15 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
     ln -s dir_to_coco ./coco
     ```
 * 2 The training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
-    **However we strongly suggest you read the scripts first so that you can give correct settings for your envs.**   
+    **However we strongly suggest you read the scripts first so that you can give correct settings for your envs.**
+    - 2.0 Modify save model conditions in train.py, line 61  
+          `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
+          and set proper epoch in _*.yaml_.
     - 2.1 Train MagicPoint (about 1~3 hours):  
           `python train.py ./config/magic_point_train.yaml`   
           (Note that you have to delete the directory _./data/synthetic_shapes_ 
           whenever you want to regenerate it)
-    - 2.2 Export coco labels (need very long time):   
+    - 2.2 Export coco labels (need very long time >10 hours):   
           `python homo_export_labels.py #using your data dirs`
     - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)       
           `python train.py ./config/magic_point_coco_train.py #with correct data dirs` 
@@ -102,7 +105,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
         python export_detections_repeatability.py   
         python compute_repeatability.py  
         ## or
-        python export_descriptors.py  
+        python export_descriptors.py #(about 5 hours) 
         python compute_desc_eval.py  
         ```   
     **AGAIN: you have to edit _.yaml_ files to run corresponding tasks,
