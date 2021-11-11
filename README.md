@@ -108,7 +108,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
         python export_descriptors.py #(about 5 hours) 
         python compute_desc_eval.py  
         ```   
-    **AGAIN: you have to edit _.yaml_ files to run corresponding tasks,
+    **AGAIN: You have to edit _.yaml_ files to run corresponding tasks,
      especially for the _path_ or _dir_ items** 
     ```
     model
