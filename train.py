@@ -27,7 +27,10 @@ def train_eval(model, dataloader, config):
         for i, data in tqdm(enumerate(dataloader['train'])):
 
             prob, desc, prob_warp, desc_warp = None, None, None, None
-            raw_outputs = model(data['raw'])
+            if config['model']['name']=='magicpoint' and config['data']['name']=='coco':
+                raw_outputs = model(data['warp'])
+            else:
+                raw_outputs = model(data['raw'])
             if config['model']['name']=='superpoint':
                 warp_outputs = model(data['warp'])
                 prob, desc, prob_warp, desc_warp = raw_outputs['det_info'], \
@@ -73,8 +76,10 @@ def do_eval(model, dataloader, config, device):
     mean_loss = []
     for ind, data in tqdm(enumerate(dataloader)):
         prob, desc, prob_warp, desc_warp = None, None, None, None
-        raw_outputs = model(data['raw'])
-
+        if config['model']['name'] == 'magicpoint' and config['data']['name'] == 'coco':
+            raw_outputs = model(data['warp'])
+        else:
+            raw_outputs = model(data['raw'])
         if config['model']['name'] == 'superpoint':
             warp_outputs = model(data['warp'])
             prob, desc, prob_warp, desc_warp = raw_outputs['det_info'], \
