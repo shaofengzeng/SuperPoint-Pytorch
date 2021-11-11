@@ -52,12 +52,6 @@ class DescriptorHead(torch.nn.Module):
         out = self.bnDa(self.relu(self.convDa(x)))
         out = self.bnDb(self.convDb(out))
 
-        # out = self.relu(self.convDa(x))
-        # out = self.convDb(out)
-
-        # out_norm = torch.norm(out, p=2, dim=1)# Compute the norm.
-        # out = out.div(torch.unsqueeze(out_norm, 1))# Divide by norm to normalize.
-
         # TODO: here is different with tf.image.resize_bilinear
         desc = F.interpolate(out, scale_factor=self.grid_size, mode='bilinear',align_corners=False)
         desc = F.normalize(desc, p=2, dim=1)  # normalize by channel
