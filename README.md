@@ -15,8 +15,8 @@ a famous problem have been discussed in
 
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
-- SuperPoint, homography estimation correctness on Hpatches: 0.715
-# Some Training Tricks For SuperPoint
+- SuperPoint (without BN), homography estimation correctness on Hpatches: 0.715
+# Some Possible Training Tricks For SuperPoint
 ##Before Training  
 1. Remove parameter eps=1e-3 for all the BatchNorma2d functions
        in model/modules/cnn/\*.py   
@@ -48,7 +48,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
 `loss = det_loss + det_loss_warp + weighted_des_loss`   
 , and start training.
 
-##Other Practices  
+##Other Training Tricks
 1. Remove BatchNorm2d or other batch normalization op. 
 
 
@@ -92,7 +92,7 @@ dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [ba
           `python train.py ./config/magic_point_train.yaml`   
           (Note that you have to delete the directory _./data/synthetic_shapes_ 
           whenever you want to regenerate it)
-    - 2.2 Export coco labels (need very long time >10 hours):   
+    - 2.2 Export coco labels (need very long time >36 hours):   
           `python homo_export_labels.py #using your data dirs`
     - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)       
           `python train.py ./config/magic_point_coco_train.py #with correct data dirs` 
