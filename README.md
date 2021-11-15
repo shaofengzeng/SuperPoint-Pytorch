@@ -49,7 +49,7 @@ in loss.py
     ```
   
 3. Set base_lr=0.01 (in superpoint_train.yaml)  
-4. Start training and get a pretrained model _./export/sp_x.pth_
+4. Start training and get a pretrained model, for example, _./export/sp_x.pth_
 5. Train both detector and descriptor loss. Firstly,set   
     ```
     pretrained_model=./export/sp_x.pth  
@@ -68,7 +68,7 @@ in loss.py
 7. Start training again.(`lambda_d and lambda_loss` may need to be adjusted several times).
 
 ## Other Training Tricks
-1. Remove BatchNorm2d or other batch normalization operations. 
+1. Remove BatchNorm2d or other normalization operations. 
 
 
 # New Update (09/04/2021)
