@@ -148,9 +148,6 @@ class PhotoAugmentor:
 
 
 
-
-
-
 # class TransformSequence:
 #     def __init__(self, augmenters):
 #         assert(isinstance(augmenters, list))
