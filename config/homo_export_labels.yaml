@@ -1,9 +1,9 @@
 data:
     name: 'coco'
     resize: [320,240] #w,h
-    src_image_path: './data/coco/images/test2017/'
-    dst_label_path: './data/mp_coco_v2/labels/test2017/'
-    dst_image_path: './data/mp_coco_v2/images/test2017/'
+    src_image_path: './data/coco/images/train2017/'
+    dst_label_path: './data/syn_mp_coco_v1/labels/train2017/'
+    dst_image_path: './data/syn_mp_coco_v1/images/train2017/'
     homography_adaptation:
         num: 100
         aggregation: 'sum'
@@ -22,10 +22,10 @@ data:
             max_angle: 1.5707963
 model:
     grid_size: 8
-    det_thresh: 0.015
+    det_thresh: 0.015 #0.015
     nms: 4
     topk: -1
-    pretrained_model: './export/mg_0.pth'
+    pretrained_model: './export/syn_mp_5.pth'
     backbone:
         backbone_type: 'VGG' #ResNetFPN
         vgg:
