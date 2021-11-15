@@ -68,7 +68,7 @@ in loss.py
 7. Start training again.(`lambda_d and lambda_loss` may need to be adjusted several times).
 
 ## Other Training Tricks
-1. Remove BatchNorm2d or other normalization operations. 
+1. Remove BatchNorm2d or other normalization operations.  
 
 
 # New Update (09/04/2021)
@@ -108,22 +108,22 @@ in loss.py
     - 2.0 Modify save model conditions in train.py, line 61  
           `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
           and set proper epoch in _*.yaml_.
-    - 2.1 Train MagicPoint (about 1~3 hours):  
+    - 2.1 Train MagicPoint (>1 hours):  
           `python train.py ./config/magic_point_train.yaml`   
           (Note that you have to delete the directory _./data/synthetic_shapes_ 
           whenever you want to regenerate it)
-    - 2.2 Export coco labels (very long time >40 hours):   
+    - 2.2 Export coco labels (>40 hours):   
           `python homo_export_labels.py #using your data dirs`
     - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)       
           `python train.py ./config/magic_point_coco_train.py #with correct data dirs` 
-    - 2.4 Train SuperPoint following the steps in **Training Steps**     
+    - 2.4 Train SuperPoint following the steps in **Training Steps** (>12 hours)    
           `python train.py ./config/superpoint_train.py #with correct data dirs`  
     - others. Validate detection repeatability or description
               (Better in training mode if you also have eval problem stated in **Existing Problems**)  
                    
         ```
-        python export_detections_repeatability.py   
-        python compute_repeatability.py  
+        python export_detections_repeatability.py #(very fast)  
+        python compute_repeatability.py  #(very fast)
         ## or
         python export_descriptors.py #(about 6 hours) 
         python compute_desc_eval.py #(about 1.5 hours)
