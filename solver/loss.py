@@ -16,23 +16,23 @@ def loss_func(config, data, prob, desc=None, prob_warp=None, desc_warp=None, dev
 
     if desc is None or prob_warp is None or desc_warp is None:
         return det_loss
-    else:# descriptor loss
-        det_loss_warp = detector_loss(data['warp']['kpts_map'],
-                                      prob_warp['logits'],
-                                      data['warp']['mask'],
-                                      config['grid_size'],
-                                      device=device)
-        des_loss = descriptor_loss(config,
-                                   desc['desc_raw'],
-                                   desc_warp['desc_raw'],
-                                   data['homography'],
-                                   data['warp']['mask'],#?
-                                   device)
 
-        weighted_des_loss = config['loss']['lambda_loss'] * des_loss
-        loss = det_loss + det_loss_warp + weighted_des_loss
-        #print('DEBUG: {:.2},{:.2},{:.2}'.format(det_loss.item(), det_loss_warp.item(), weighted_des_loss.item()))
-        return loss #det_loss, det_loss_warp, des_loss
+    det_loss_warp = detector_loss(data['warp']['kpts_map'],
+                                  prob_warp['logits'],
+                                  data['warp']['mask'],
+                                  config['grid_size'],
+                                  device=device)
+    des_loss = descriptor_loss(config,
+                               desc['desc_raw'],
+                               desc_warp['desc_raw'],
+                               data['homography'],
+                               data['warp']['mask'],#?
+                               device)
+
+    weighted_des_loss = config['loss']['lambda_loss'] * des_loss
+    loss = det_loss + det_loss_warp + weighted_des_loss
+    print('Debug(loss.py) Loss: det:{:.3f},det_warp:{:.3f},desc:{:.3f}'.format(det_loss.item(), det_loss_warp.item(), weighted_des_loss.item()))
+    return loss #det_loss, det_loss_warp, des_loss
 
 def detector_loss(keypoint_map, logits, valid_mask=None, grid_size=8, device='cpu'):
     """
@@ -60,7 +60,7 @@ def detector_loss(keypoint_map, logits, valid_mask=None, grid_size=8, device='cp
     #loss0 = F.cross_entropy(logits, labels)
     # ##method 2
     # ##method 2 equals to tf.nn.sparse_softmax_cross_entropy()
-    epsilon = 1e-9
+    epsilon = 1e-5
     loss = F.log_softmax(logits,dim=1)
     mask = valid_mask.type(torch.float32)
     mask /= (torch.mean(mask)+epsilon)
@@ -117,14 +117,15 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     ##
     dot_product_desc = torch.sum(descriptors * warped_descriptors, dim=1)
 
+    ## better comment this at the begining of training
     dot_product_desc = F.relu(dot_product_desc)
 
-    dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
-                                                 [batch_size, Hc, Wc, Hc, Wc])
-    dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
-                                                 [batch_size, Hc, Wc, Hc, Wc])
+    # dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
+    #                                              [batch_size, Hc, Wc, Hc, Wc])
+    # dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
+    #                                              [batch_size, Hc, Wc, Hc, Wc])
 
-
+    ##Normalization scores, better comment this at the begining of training
     # dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
     #                                              p=2,
     #                                              dim=3), [batch_size, Hc, Wc, Hc, Wc])
@@ -149,6 +150,15 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     valid_mask = torch.reshape(valid_mask, [batch_size, 1, 1, Hc, Wc])
 
     normalization = torch.sum(valid_mask)*(Hc*Wc)
+
+    ## VERY IMPORTANT variables for setting better lambda_d
+    ## You can try one of the two pairs
+    #positive_dist = torch.sum(((valid_mask*s*positive_dist)[(valid_mask*s*positive_dist)>0]).mean())
+    #negative_dist = torch.sum(((valid_mask*(1-s)*negative_dist)[(valid_mask*(1-s)*negative_dist)>0]).mean())
+    positive_dist = torch.sum(valid_mask * lambda_d * s * positive_dist) / normalization
+    negative_dist = torch.sum(valid_mask * (1 - s) * negative_dist) / normalization
+    print('Debug (loss.py) positive_dist:{:.3f}, negtive_dist:{:.3f}'.format(positive_dist, negative_dist))
+
     loss = torch.sum(valid_mask * loss) / normalization
     return loss
 
@@ -161,8 +171,6 @@ def precision_recall(pred, keypoint_map, valid_mask):
     recall = torch.sum(pred*labels)/torch.sum(labels)
 
     return {'precision': precision, 'recall': recall}
-
-
 
 
 
