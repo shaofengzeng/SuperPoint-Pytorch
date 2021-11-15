@@ -151,15 +151,15 @@ if __name__=='__main__':
         os.makedirs(config['data']['dst_image_path'])
 
 
-    #image_list = os.listdir(config['data']['src_image_path'])
-    #image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
+    image_list = os.listdir(config['data']['src_image_path'])
+    image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
 
-    image_list = []
-    with open('./coco_train_list.txt', 'r') as fin:
-        for line in fin:
-            image_list.append(line.strip())
-    #
-    image_list = image_list[0:int(len(image_list)*0.5)]
+    # image_list = []
+    # with open('./coco_train_list.txt', 'r') as fin:
+    #     for line in fin:
+    #         image_list.append(line.strip())
+    # #
+    # image_list = image_list[0:int(len(image_list)*0.5)]
 
 
     device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
