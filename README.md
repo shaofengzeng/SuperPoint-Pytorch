@@ -15,9 +15,9 @@ a famous problem have been discussed in
 
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
-- SuperPoint (without BN), homography estimation correctness on Hpatches: 0.715
-#Training Tricks For SuperPoint (personal experience,optional)
-##Before Training (_VERY IMPORTANT_) 
+- SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77  
+# Training Tricks For SuperPoint (personal experience,optional)
+## Before Training (_VERY IMPORTANT_) 
 1. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
 2. Set better parameters for `lambda_d, lambda_loss` to make `positive_dist and negative_dist`
    as small as possible.  
@@ -63,7 +63,7 @@ in loss.py
    in superpoint_train.yaml. 
    `lambda_d and lambda_loss` may need to be adjusted several times.
 
-##Other Training Tricks
+## Other Training Tricks
 1. Remove BatchNorm2d or other batch normalization operations. 
 
 
