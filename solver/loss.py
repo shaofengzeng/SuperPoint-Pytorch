@@ -120,11 +120,6 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     ## better comment this at the begining of training
     dot_product_desc = F.relu(dot_product_desc)
 
-    # dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
-    #                                              [batch_size, Hc, Wc, Hc, Wc])
-    # dot_product_desc = torch.reshape(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
-    #                                              [batch_size, Hc, Wc, Hc, Wc])
-
     ##Normalization scores, better comment this at the begining of training
     # dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
     #                                              p=2,
