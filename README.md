@@ -20,9 +20,10 @@ a famous problem have been discussed in
 - Pretrained model: [sp_0.pth](./sp_0.pth)
 # SuperPoint Training Tricks (personal experience,optional)
 
-## Before Training (_VERY IMPORTANT_) 
-1. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
-2. Set better parameters for `lambda_d, lambda_loss` to make `positive_dist and negative_dist`
+## Before Training (_VERY IMPORTANT_)  
+1. UPDATE your repository to the LATEST VERSION
+2. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
+3. Set better parameters for `lambda_d, lambda_loss` to make `positive_dist and negative_dist`
    as small as possible.  
    
    > **lambda_d** is used to balance the positive_dist and negtive_dist  
