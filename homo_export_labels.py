@@ -151,10 +151,18 @@ if __name__=='__main__':
         os.makedirs(config['data']['dst_image_path'])
 
 
-    image_list = os.listdir(config['data']['src_image_path'])
-    image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
+    #image_list = os.listdir(config['data']['src_image_path'])
+    #image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
 
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    image_list = []
+    with open('./coco_train_list.txt', 'r') as fin:
+        for line in fin:
+            image_list.append(line.strip())
+    #
+    image_list = image_list[0:int(len(image_list)*0.5)]
+
+
+    device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 
     net = MagicPoint(config['model'], input_channel=1, grid_size=8,device=device)
     net.load_state_dict(torch.load(config['model']['pretrained_model']))
@@ -191,9 +199,12 @@ if __name__=='__main__':
         points = [pt.cpu().numpy() for pt in points]
         ##save points
         for fname, pt in zip(batch_fnames, points):
+            if len(pt)==0:
+                continue
             cv2.imwrite(os.path.join(config['data']['dst_image_path'], fname), img)
             np.save(os.path.join(config['data']['dst_label_path'], fname+'.npy'), pt)
             print('{}, {}'.format(os.path.join(config['data']['dst_label_path'], fname+'.npy'), len(pt)))
+
 
         # ## debug
         # for img, pts in zip(batch_raw_imgs,points):
