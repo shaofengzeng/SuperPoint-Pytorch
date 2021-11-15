@@ -58,7 +58,7 @@ def train_eval(model, dataloader, config):
                               optimizer.state_dict()['param_groups'][0]['lr'], np.mean(mean_loss)))
                 mean_loss = []
             # do evaluation
-            if (i%60000==0 and i!=0) or (i+1)==len(dataloader['train']):
+            if (i%30000==0 and i!=0) or (i+1)==len(dataloader['train']):
                 eval_loss = do_eval(model, dataloader['test'], config, device)
                 model.train()
                 if eval_loss < best_loss:
@@ -75,6 +75,8 @@ def do_eval(model, dataloader, config, device):
     model.eval()
     mean_loss = []
     for ind, data in tqdm(enumerate(dataloader)):
+        if ind>2000:#spend too much time if test all
+            break
         prob, desc, prob_warp, desc_warp = None, None, None, None
         if config['model']['name'] == 'magicpoint' and config['data']['name'] == 'coco':
             raw_outputs = model(data['warp'])
