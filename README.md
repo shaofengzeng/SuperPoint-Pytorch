@@ -125,8 +125,8 @@ in loss.py
         python export_detections_repeatability.py #(very fast)  
         python compute_repeatability.py  #(very fast)
         ## or
-        python export_descriptors.py #(about 6 hours) 
-        python compute_desc_eval.py #(about 1.5 hours)
+        python export_descriptors.py #(> 5.5 hours) 
+        python compute_desc_eval.py #(> 1.5 hours)
         ```   
     **AGAIN: You have to edit _.yaml_ files to run corresponding tasks,
      especially for the _path_ or _dir_ items** 
