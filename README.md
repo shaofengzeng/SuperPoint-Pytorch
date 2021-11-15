@@ -17,7 +17,7 @@ a famous problem have been discussed in
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77
   
-# Training Tricks For SuperPoint (personal experience,optional)
+# SuperPoint Training Tricks (personal experience,optional)
 
 ## Before Training (_VERY IMPORTANT_) 
 1. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
@@ -49,13 +49,13 @@ in loss.py
   
 3. Set base_lr=0.01 (in superpoint_train.yaml)  
 4. Start training and get a pretrained model _./export/sp_x.pth_
-5. Set 
+5. Train both detector and descriptor loss. Firstly,set   
     ```
     pretrained_model=./export/sp_x.pth  
     base_lr=0.001
     ```
     in _superpoint_train.yaml_
-6. Train both detector and descriptor loss, i.e., set  
+6. Set  
     `loss = det_loss + det_loss_warp + weighted_des_loss` 
    in _loss.py_,
    and set 
@@ -64,7 +64,7 @@ in loss.py
    lambda_loss = 10 #balance detector loss and descriptor loss 
    ```  
    in superpoint_train.yaml. 
-   `lambda_d and lambda_loss` may need to be adjusted several times.
+7. Start training again.(`lambda_d and lambda_loss` may need to be adjusted several times).
 
 ## Other Training Tricks
 1. Remove BatchNorm2d or other batch normalization operations. 
