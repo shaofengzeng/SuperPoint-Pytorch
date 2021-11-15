@@ -52,13 +52,13 @@ def train_eval(model, dataloader, config):
             #lr_sch.step()
 
             # for every 1000 images, print progress and visualize the matches
-            if i % 2000 == 0:
+            if i % 1000 == 0:
                 print('Epoch [{}/{}], Step [{}/{}], LR [{}], Loss: {:.3f}'
                       .format(epoch, config['solver']['epoch'], i, len(dataloader['train']),
                               optimizer.state_dict()['param_groups'][0]['lr'], np.mean(mean_loss)))
                 mean_loss = []
             # do evaluation
-            if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):
+            if (i%60000==0 and i!=0) or (i+1)==len(dataloader['train']):
                 eval_loss = do_eval(model, dataloader['test'], config, device)
                 model.train()
                 if eval_loss < best_loss:
