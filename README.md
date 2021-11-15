@@ -16,7 +16,8 @@ a famous problem have been discussed in
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
 - SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77
-  
+- SuperPoint (with BN), keypoint repeatability on Hpatches: 0.619  
+- Pretrained model: [sp_0.pth](./sp_0.pth)
 # SuperPoint Training Tricks (personal experience,optional)
 
 ## Before Training (_VERY IMPORTANT_) 
