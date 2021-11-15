@@ -15,8 +15,10 @@ a famous problem have been discussed in
 
 # Our Performances
 - MagicPoint, detection repeatability on Hpatches: 0.664
-- SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77  
+- SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77
+  
 # Training Tricks For SuperPoint (personal experience,optional)
+
 ## Before Training (_VERY IMPORTANT_) 
 1. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
 2. Set better parameters for `lambda_d, lambda_loss` to make `positive_dist and negative_dist`
@@ -25,7 +27,8 @@ a famous problem have been discussed in
    > **lambda_d** is used to balance the positive_dist and negtive_dist  
    > **lambda_loss** is used to balance the detector loss and descriptor loss
      
-   These parameters can be found in _*.yaml_ and _loss.py_.
+   These parameters can be found in _*.yaml_ and _loss.py_.  
+   
 ## Steps
 1. Train detector loss. Replace the line  
 `loss = det_loss + det_loss_warp + weighted_des_loss`  
