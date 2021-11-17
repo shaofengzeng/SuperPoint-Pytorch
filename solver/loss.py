@@ -118,7 +118,7 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     dot_product_desc = torch.sum(descriptors * warped_descriptors, dim=1)
 
     ## better comment this at the begining of training
-    dot_product_desc = F.relu(dot_product_desc)
+    #dot_product_desc = F.relu(dot_product_desc)
 
     ##Normalization scores, better comment this at the begining of training
     # dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
@@ -147,9 +147,6 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     normalization = torch.sum(valid_mask)*(Hc*Wc)
 
     ## VERY IMPORTANT variables for setting better lambda_d
-    ## You can try one of the two pairs
-    #positive_dist = torch.sum(((valid_mask*s*positive_dist)[(valid_mask*s*positive_dist)>0]).mean())
-    #negative_dist = torch.sum(((valid_mask*(1-s)*negative_dist)[(valid_mask*(1-s)*negative_dist)>0]).mean())
     positive_dist = torch.sum(valid_mask * lambda_d * s * positive_dist) / normalization
     negative_dist = torch.sum(valid_mask * (1 - s) * negative_dist) / normalization
     print('Debug (loss.py) positive_dist:{:.3f}, negtive_dist:{:.3f}'.format(positive_dist, negative_dist))
