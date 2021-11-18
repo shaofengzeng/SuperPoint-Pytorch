@@ -147,9 +147,9 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     normalization = torch.sum(valid_mask)*(Hc*Wc)
 
     ## VERY IMPORTANT variables for setting better lambda_d
-    positive_dist = torch.sum(valid_mask * lambda_d * s * positive_dist) / normalization
-    negative_dist = torch.sum(valid_mask * (1 - s) * negative_dist) / normalization
-    print('Debug (loss.py) positive_dist:{:.3f}, negtive_dist:{:.3f}'.format(positive_dist, negative_dist))
+    print_positive_dist = torch.sum(valid_mask * lambda_d * s * positive_dist) / normalization
+    print_negative_dist = torch.sum(valid_mask * (1 - s) * negative_dist) / normalization
+    print('Debug (loss.py) positive_dist:{:.3f}, negtive_dist:{:.3f}'.format(print_positive_dist, print_negative_dist))
 
     loss = torch.sum(valid_mask * loss) / normalization
     return loss
