@@ -13,68 +13,10 @@ This work is based on:
 a famous problem have been discussed in 
 [Performance highly degraded when eval() is activated in the test phase](https://discuss.pytorch.org/t/performance-highly-degraded-when-eval-is-activated-in-the-test-phase/3323)
 
-# Our Performances
-- MagicPoint, detection repeatability on Hpatches: 0.664
-- SuperPoint (with BN), homography estimation correctness on Hpatches: 0.77
-- SuperPoint (with BN), keypoint repeatability on Hpatches: 0.619  
-- Pretrained model: [sp_0.pth](./sp_0.pth)
-# SuperPoint Training Tricks (personal experience,optional)
-
-## Before Training (_VERY IMPORTANT_)  
-1. UPDATE your repository to the LATEST VERSION
-2. Check parameters for BatchNorma2d in model/modules/cnn/\*.py, if you have set eps=1e-3, remove it. 
-3. Set better parameters for `lambda_d, lambda_loss` to make `positive_dist and negative_dist`
-   as small as possible.  
-   
-   > **lambda_d** is used to balance the positive_dist and negtive_dist  
-   > **lambda_loss** is used to balance the detector loss and descriptor loss
-     
-   These parameters can be found in _*.yaml_ and _loss.py_.  
-   
-## Steps
-1. Train detector loss. Replace the line  
-`loss = det_loss + det_loss_warp + weighted_des_loss`  
-with      
-`loss = det_loss + det_loss_warp`   
-in loss.py    
-2. Commet the following lines in loss.py
-
-    ```
-    dot_product_desc = F.relu(dot_product_desc)
-    dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
-                                                  p=2,
-                                                  dim=3), [batch_size, Hc, Wc, Hc, Wc])
-    dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
-                                                  p=2,
-                                                  dim=1), [batch_size, Hc, Wc, Hc, Wc])
-    ```
-  
-3. Set base_lr=0.01 (in superpoint_train.yaml)  
-4. Start training and get a pretrained model, for example, _./export/sp_x.pth_
-5. Train both detector and descriptor loss. Firstly,set   
-    ```
-    pretrained_model=./export/sp_x.pth  
-    base_lr=0.001
-    ```
-    in _superpoint_train.yaml_
-6. Set  
-    `loss = det_loss + det_loss_warp + weighted_des_loss` 
-   in _loss.py_,
-   and set 
-   ```
-   lambda_d = 250  #balance positive_dist and negtive_dist
-   lambda_loss = 10 #balance detector loss and descriptor loss 
-   ```  
-   in superpoint_train.yaml. 
-7. Start training again.(`lambda_d and lambda_loss` may need to be adjusted several times).
-
-## Other Training Tricks
-1. Remove BatchNorm2d or other normalization operations.  
-
 
 # New Update (09/04/2021)
-* You can now reproduce [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint)'s performances with pytorch.   
-* Main steps:
+* Convert tf pretrained weight to Pytorch   
+* Usage:
     - 1 Construct network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
     - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
     - 3 Set parameter momentum=0.01 (**not tested**)
