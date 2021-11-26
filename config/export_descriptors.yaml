@@ -23,7 +23,7 @@ data:
 model:
     name: 'superpoint'
     grid_size: 8
-    pretrained_model: './export/sp_0_1.5483.pth'
+    pretrained_model: './export/sp_0.pth'
     nms: 8
     det_thresh: 0.001 # 1/65
     topk: 1000
@@ -37,4 +37,3 @@ model:
     des_head: #descriptor head
         feat_in_dim: 128
         feat_out_dim: 256
-eval_iter: 600
