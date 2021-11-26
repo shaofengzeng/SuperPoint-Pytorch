@@ -139,7 +139,6 @@ def homography_adaptation(net, raw_image, config, device='cpu'):
             'mean_prob': mean_prob, 'input_images': images, 'H_probs': probs}
 
 
-
 if __name__=='__main__':
 
     with open('./config/homo_export_labels.yaml', 'r', encoding='utf8') as fin:
@@ -154,7 +153,7 @@ if __name__=='__main__':
     image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
 
     # image_list = []
-    # with open('./coco_train_list.txt', 'r') as fin:
+    # with open('./coco_train_list.txt', 'r') as fin:#coco_train_list.txt contains all image paths
     #     for line in fin:
     #         image_list.append(line.strip())
     # image_list = image_list[0:int(len(image_list)*0.5)]
