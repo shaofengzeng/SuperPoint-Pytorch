@@ -43,12 +43,12 @@ model_dict_map= \
 
 def train_eval(model, dataloader, config):
     optimizer = torch.optim.Adam(model.parameters(), lr=config['solver']['base_lr'])
-    lr_sch = StepLR(optimizer, step_size=30000, gamma=0.5)
+
     try:
         # start training
         for epoch in range(config['solver']['epoch']):
             model.train()
-            mean_loss, best_loss = [], 9999
+            mean_loss = []
             for i, data in tqdm(enumerate(dataloader['train'])):
                 prob, desc, prob_warp, desc_warp = None, None, None, None
                 if config['model']['name']=='magicpoint' and config['data']['name']=='coco':
@@ -74,9 +74,8 @@ def train_eval(model, dataloader, config):
                 model.zero_grad()
                 loss.backward()
                 optimizer.step()
-                lr_sch.step()
 
-                if (i%500==0) and (i!=0):
+                if (i%1000==0) and (i!=0):
                     print('Epoch [{}/{}], Step [{}/{}], LR [{}], Loss: {:.3f}'
                           .format(epoch, config['solver']['epoch'], i, len(dataloader['train']),
                                   optimizer.state_dict()['param_groups'][0]['lr'], np.mean(mean_loss)))
@@ -86,15 +85,15 @@ def train_eval(model, dataloader, config):
                 if (i%30000==0 and i!=0) or (i+1)==len(dataloader['train']):
                     model.eval()
                     eval_loss = do_eval(model, dataloader['test'], config, device)
-                    #if eval_loss < best_loss:
+                    model.train()
+
                     save_path = os.path.join(config['solver']['save_dir'],
                                              config['solver']['model_name'] + '_{}_{}.pth').format(epoch, round(eval_loss, 3))
                     torch.save(model.state_dict(), save_path)
                     print('Epoch [{}/{}], Step [{}/{}], Eval loss {:.3f}, Checkpoint saved to {}'
                           .format(epoch, config['solver']['epoch'], i, len(dataloader['train']), eval_loss, save_path))
-                    best_loss = eval_loss
                     mean_loss = []
-                    model.train()
+
     except KeyboardInterrupt:
         torch.save(model.state_dict(), "./export/key_interrupt_model.pth")
 
