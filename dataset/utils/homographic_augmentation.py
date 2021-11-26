@@ -213,15 +213,15 @@ def sample_homography(shape, config=None, device='cpu'):
 def ratio_preserving_resize(img, target_size):
     '''
     :param img: raw img
-    :param dest_size: (w,h)
+    :param target_size: (h,w)
     :return:
     '''
-    scales = np.array((target_size[1]/img.shape[0], target_size[0]/img.shape[1]))##h_s,w_s
+    scales = np.array((target_size[0]/img.shape[0], target_size[1]/img.shape[1]))##h_s,w_s
 
     new_size = np.round(np.array(img.shape)*np.max(scales)).astype(np.int)#
     temp_img = cv2.resize(img, tuple(new_size[::-1]))
     curr_h, curr_w = temp_img.shape
-    target_w, target_h = target_size
+    target_h, target_w = target_size
     ##
     hp = (target_h-curr_h)//2
     wp = (target_w-curr_w)//2
@@ -230,11 +230,8 @@ def ratio_preserving_resize(img, target_size):
     return new_img
 
 
-
-
 if __name__=='__main__':
-    import cv2
-    img = cv2.imread('./data/icl_snippet/250.png',0)
+    pass
 
 
 

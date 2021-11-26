@@ -85,7 +85,7 @@ class COCODataset(torch.utils.data.Dataset):
         '''load raw data'''
         data_path = self.samples[idx]#raw image path of processed image and point path
         img = cv2.imread(data_path['image'], 0)#Gray image
-        img = cv2.resize(img, self.resize)
+        img = cv2.resize(img, self.resize[::-1])
         pts = None if data_path['label'] is None else np.load(data_path['label'])#N*2,yx
         pts = pts.astype(np.float32)
         # init data dict
@@ -192,8 +192,8 @@ if __name__=='__main__':
         #mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
         #warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
 
-        img = cv2.resize(img, (img.shape[1]*2,img.shape[0]*2))
-        img_warp = cv2.resize(img_warp, (img_warp.shape[1]*2,img_warp.shape[0]*2))
+        img = cv2.resize(img, (img.shape[1]*2, img.shape[0]*2))
+        img_warp = cv2.resize(img_warp, (img_warp.shape[1]*2, img_warp.shape[0]*2))
 
         plt.subplot(1,2,1)
         plt.imshow(img)

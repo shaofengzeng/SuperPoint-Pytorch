@@ -63,7 +63,7 @@ class PatchesDataset(Dataset):
         H = zip_data['homography'].astype(np.float32)
         source_size = zip_data['shape'].astype(np.float32)#h,w
         source_warped_size = zip_data['warped_shape'].astype(np.float32)#h,w
-        target_size = np.array(self.config['preprocessing']['resize'],dtype=np.float32)[::-1]#h,w
+        target_size = np.array(self.config['preprocessing']['resize'],dtype=np.float32)#h,w
 
         # Compute the scaling ratio due to the resizing for both images
         s = np.max(target_size/source_size)
