@@ -144,7 +144,7 @@ class PhotoAugmentor:
 
         for i, pind in enumerate(indices):
             if i==pind:
-                image = getattr(self, self.primitives[i])(image)
+                image = getattr(self, self.primitives[pind])(image)
         return image.astype(np.float32)
 
 
