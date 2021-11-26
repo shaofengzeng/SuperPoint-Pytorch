@@ -8,11 +8,6 @@ This work is based on:
 - Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork). 
 - [Kornia](https://kornia.github.io/)  
 
-# Existing Problems
-1. Different performances in training and evaluation modes, which is 
-a famous problem have been discussed in 
-[Performance highly degraded when eval() is activated in the test phase](https://discuss.pytorch.org/t/performance-highly-degraded-when-eval-is-activated-in-the-test-phase/3323)
-
 
 # New Update (09/04/2021)
 * Convert tf pretrained weight to Pytorch   
@@ -24,6 +19,7 @@ a famous problem have been discussed in
  
  
 # Usage
+* 0 Update your repository to the latested version (if you have pulled it before)
 * 1 Prepare your data. Make directories *data* and *export*. The data directory should look like,
     ```
     data
