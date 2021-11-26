@@ -23,7 +23,7 @@ def train_eval(model, dataloader, config):
     # start training
     for epoch in range(config['solver']['epoch']):
         model.train()
-        mean_loss, best_loss = [], 9999
+        mean_loss = []
         for i, data in tqdm(enumerate(dataloader['train'])):
 
             prob, desc, prob_warp, desc_warp = None, None, None, None
@@ -61,13 +61,13 @@ def train_eval(model, dataloader, config):
             if (i%30000==0 and i!=0) or (i+1)==len(dataloader['train']):
                 eval_loss = do_eval(model, dataloader['test'], config, device)
                 model.train()
-                if eval_loss < best_loss:
-                    save_path = os.path.join(config['solver']['save_dir'],
-                                             config['solver']['model_name'] + '_{}_{}.pth').format(epoch, round(eval_loss, 4))
-                    torch.save(model.state_dict(), save_path)
-                    print('Epoch [{}/{}], Step [{}/{}], Checkpoint saved to {}'
-                          .format(epoch, config['solver']['epoch'], i, len(dataloader['train']), save_path))
-                    best_loss = eval_loss
+
+                ##save model
+                save_path = os.path.join(config['solver']['save_dir'],
+                                         config['solver']['model_name'] + '_{}_{:.4f}.pth').format(epoch, round(eval_loss, 4))
+                torch.save(model.state_dict(), save_path)
+                print('Epoch [{}/{}], Step [{}/{}], Checkpoint saved to {}'
+                      .format(epoch, config['solver']['epoch'], i, len(dataloader['train']), save_path))
                 mean_loss = []
 
 @torch.no_grad()
@@ -75,7 +75,7 @@ def do_eval(model, dataloader, config, device):
     model.eval()
     mean_loss = []
     for ind, data in tqdm(enumerate(dataloader)):
-        if ind>2000:#spend too much time if test all
+        if ind>5000:#spend too much time if test all
             break
         prob, desc, prob_warp, desc_warp = None, None, None, None
         if config['model']['name'] == 'magicpoint' and config['data']['name'] == 'coco':
@@ -116,7 +116,7 @@ if __name__=='__main__':
     if not os.path.exists(config['solver']['save_dir']):
         os.makedirs(config['solver']['save_dir'])
 
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     data_loaders = None
     if config['data']['name'] == 'coco':
