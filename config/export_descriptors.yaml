@@ -4,7 +4,7 @@ data:
     export_dir: './data/descriptors/hpatches/'
     alteration: 'all'  # 'all' 'i' 'v'
     preprocessing:
-        resize: [480, 640]  # False for coco
+        resize: [480, 640]
     homography_adaptation:
         num: 0
         aggregation: 'sum'

@@ -3,7 +3,7 @@ data:
     export_dir: './data/repeatability/hpatches/'
     alteration: 'all'  # 'all' 'i' 'v'
     preprocessing:
-        resize: [320, 240]  # [240, 320] for HPatches and False for coco
+        resize: [240,320]
     homography_adaptation:
         num: 0
         aggregation: 'sum'

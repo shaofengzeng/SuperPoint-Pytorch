@@ -1,6 +1,6 @@
 data:
     name: 'coco'
-    resize: [320,240] #w,h
+    resize: [240，320]
     src_image_path: './data/coco/images/train2017/'
     dst_label_path: './data/syn_mp_coco_rot_v1/labels/train2017/'
     dst_image_path: './data/syn_mp_coco_rot_v1/images/train2017/'

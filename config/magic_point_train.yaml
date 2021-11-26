@@ -6,7 +6,7 @@ data:
     data_dir: './data/synthetic_shapes'#where to save generated data
     preprocessing:
         blur_size: 21
-        resize: [120, 160]  # Should be multiples of 8
+        resize: [120, 160]  ##h,w
     augmentation:
         photometric:
             enable: true

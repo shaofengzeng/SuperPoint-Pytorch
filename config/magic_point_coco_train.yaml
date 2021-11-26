@@ -1,6 +1,6 @@
 data:
     name: 'coco'
-    resize: [320,240]
+    resize: [240,320]
     image_train_path: ['./data/syn_mp_coco_v1/images/train2017/',]
     label_train_path: ['./data/syn_mp_coco_v1/labels/train2017/',]
     image_test_path: './data/syn_mp_coco_v1/images/test2017/'
