@@ -146,7 +146,6 @@ class SyntheticShapes(Dataset):
         valid_mask = torch.ones_like(img_tensor)#HW
         homography = torch.eye(3, device=self.device)#3,3
 
-
         data = {'raw':{'img':img_tensor,#H,W
                        'kpts':pts,#N,2
                        'kpts_map':kp_map,#H,W
@@ -199,26 +198,41 @@ class SyntheticShapes(Dataset):
 
 if __name__=="__main__":
     import yaml
+    import matplotlib.pyplot as plt
     from torch.utils.data import DataLoader
 
     config_file = '../config/magic_point_train.yaml'
-    device = 'cpu'#'cuda:3' if torch.cuda.is_available() else 'cpu'
+    device = 'cpu'
     with open(config_file, 'r') as fin:
         config = yaml.safe_load(fin)
 
     syn_datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=False,
+    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=True,
                                         collate_fn=syn_datasets['train'].batch_collator),
-                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=False,
+                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=True,
                                        collate_fn=syn_datasets['test'].batch_collator)}
-    for i, data in enumerate(data_loaders['train']):
-        img = data['raw']['img'][0]
-        print(img)
-        img = (img*255).squeeze().cpu().numpy().astype(np.int).astype(np.uint8)
-        pt_map = data['raw']['kpts_map'][0].squeeze().cpu().numpy()
-        mask = data['raw']['mask'][0].squeeze().cpu().numpy()
-        pts = np.vstack(np.where(pt_map==1)).T
-        print(img.shape)
-        print(i)
+    for i, d in enumerate(data_loaders['train']):
+        if i >= 3:
+            break
+        img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
+        img = cv2.merge([img, img, img])
+        ##
+        kpts = np.where(d['raw']['kpts_map'][0].squeeze().cpu().numpy())
+        kpts = np.vstack(kpts).T
+        kpts = np.round(kpts).astype(np.int)
+        for kp in kpts:
+            cv2.circle(img, (kp[1], kp[0]), radius=3, color=(0, 255, 0))
+
+        mask = d['raw']['mask'][0].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+
+        img = cv2.resize(img, (img.shape[1] * 2, img.shape[0] * 2))
+
+        plt.subplot(1, 2, 1)
+        plt.imshow(img)
+        plt.subplot(1, 2, 2)
+        plt.imshow(mask)
+        plt.show()
+
+    print('Done')
 
