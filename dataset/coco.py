@@ -168,10 +168,10 @@ if __name__=='__main__':
         config = yaml.load(fin)
 
     coco = COCODataset(config['data'],True)
-    cdataloader = DataLoader(coco,collate_fn=coco.batch_collator,batch_size=1)
+    cdataloader = DataLoader(coco,collate_fn=coco.batch_collator,batch_size=1,shuffle=True)
 
     for i,d in enumerate(cdataloader):
-        if i>1:
+        if i>=3:
             break
         img = (d['raw']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img_warp = (d['warp']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
@@ -182,27 +182,23 @@ if __name__=='__main__':
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)
         for kp in kpts:
-            cv2.circle(img, (kp[1], kp[0]), radius=2, color=(255,0,0))
+            cv2.circle(img, (kp[1], kp[0]), radius=3, color=(0,255,0))
         kpts = np.where(d['warp']['kpts_map'].squeeze().cpu().numpy())
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)
         for kp in kpts:
-            cv2.circle(img_warp, (kp[1], kp[0]), radius=2, color=(255,0,0))
+            cv2.circle(img_warp, (kp[1], kp[0]), radius=3, color=(0,255,0))
 
-        mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
-        warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+        #mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+        #warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
 
+        img = cv2.resize(img, (img.shape[1]*2,img.shape[0]*2))
         img_warp = cv2.resize(img_warp, (img_warp.shape[1]*2,img_warp.shape[0]*2))
-        warp_mask = cv2.resize(warp_mask, (warp_mask.shape[1]*2,warp_mask.shape[0]*2))
 
         plt.subplot(1,2,1)
-        plt.imshow(img_warp)
+        plt.imshow(img)
         plt.subplot(1,2,2)
-        plt.imshow(warp_mask)
+        plt.imshow(img_warp)
         plt.show()
 
-        # cv2.imwrite('image.png', img)
-        # cv2.imwrite('image_warp.png', img_warp)
-        # cv2.imwrite('mask.png', mask)
-        # cv2.imwrite('mask_warp.png', warp_mask)
     print('Done')
