@@ -1,20 +1,27 @@
 import torch
+import torch.nn as nn
 from solver.nms import box_nms
-from model.modules.cnn.vgg_backbone import VGGBackbone
+from model.modules.cnn.vgg_backbone import VGGBackbone,VGGBackboneBN
 from model.modules.cnn.cnn_heads import DetectorHead, DescriptorHead
 
 class SuperPointBNNet(torch.nn.Module):
     """ Pytorch definition of SuperPoint Network. """
 
-    def __init__(self, config, input_channel=1, grid_size=8, device='cpu'):
+    def __init__(self, config, input_channel=1, grid_size=8, device='cpu', using_bn=True):
         super(SuperPointBNNet, self).__init__()
         self.nms = config['nms']
         self.det_thresh = config['det_thresh']
         self.topk = config['topk']
-
-        self.backbone = VGGBackbone(config['backbone']['vgg'], input_channel, device=device)
-        self.detector_head = DetectorHead(input_channel=128, grid_size=grid_size)
-        self.descriptor_head = DescriptorHead(input_channel=128, output_channel=256, grid_size=grid_size)
+        if using_bn:
+            self.backbone = VGGBackboneBN(config['backbone']['vgg'], input_channel, device=device)
+        else:
+            self.backbone = VGGBackbone(config['backbone']['vgg'], input_channel, device=device)
+        ##
+        self.detector_head = DetectorHead(input_channel=config['det_head']['feat_in_dim'],
+                                          grid_size=grid_size, using_bn=using_bn)
+        self.descriptor_head = DescriptorHead(input_channel=config['des_head']['feat_in_dim'],
+                                              output_channel=config['des_head']['feat_out_dim'],
+                                              grid_size=grid_size, using_bn=using_bn)
 
     def forward(self, x):
         """ Forward pass that jointly computes unprocessed point and descriptor

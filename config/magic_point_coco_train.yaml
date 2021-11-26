@@ -1,10 +1,10 @@
 data:
     name: 'coco'
     resize: [240,320]
-    image_train_path: ['./data/syn_mp_coco_v1/images/train2017/',]
-    label_train_path: ['./data/syn_mp_coco_v1/labels/train2017/',]
-    image_test_path: './data/syn_mp_coco_v1/images/test2017/'
-    label_test_path: './data/syn_mp_coco_v1/labels/test2017/'
+    image_train_path: ['./data/mp_coco_tf/images/train2017/',]
+    label_train_path: ['./data/mp_coco_tf/labels/train2017/',]
+    image_test_path: './data/mp_coco_tf/images/test2017/'
+    label_test_path: './data/mp_coco_tf/labels/test2017/'
     augmentation:
         photometric:
             enable: true
@@ -47,17 +47,14 @@ model:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
         feat_in_dim: 128
-    des_head: #descriptor head,ignore
-        feat_in_dim: 128
-        feat_out_dim: 256
 solver:
-    epoch: 3
+    grid_size: 8
+    epoch: 5
     base_lr: 0.01
-    train_batch_size: 16
-    test_batch_size: 16
+    train_batch_size: 32
+    test_batch_size: 32
     save_dir: './export'
     model_name: 'mg_coco'
-    detection_threshold: 0.015 #0.015
+    detection_threshold: 0.001 #0.015
     nms: 4
-    grid_size: 8
 

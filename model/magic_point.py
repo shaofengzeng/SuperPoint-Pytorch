@@ -1,7 +1,7 @@
 #-*-coding:utf8-*-
 import torch
 from solver.nms import box_nms
-from model.modules.cnn.vgg_backbone import VGGBackbone
+from model.modules.cnn.vgg_backbone import VGGBackbone,VGGBackboneBN
 from model.modules.cnn.cnn_heads import DetectorHead, DescriptorHead
 
 
@@ -15,9 +15,8 @@ class MagicPoint(torch.nn.Module):
         self.det_thresh = config['det_thresh']
         self.topk = config['topk']
 
-        self.backbone = VGGBackbone(config['backbone']['vgg'], input_channel, device=device)
-        self.detector_head = DetectorHead(input_channel=128, grid_size=grid_size)
-        self.descriptor_head = DescriptorHead(input_channel=128, output_channel=256, grid_size=grid_size)
+        self.backbone = VGGBackboneBN(config['backbone']['vgg'], input_channel, device=device)
+        self.detector_head = DetectorHead(input_channel=128, grid_size=grid_size,using_bn=True)
 
     def forward(self, x):
         """ Forward pass that jointly computes unprocessed point and descriptor

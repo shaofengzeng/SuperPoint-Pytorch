@@ -1,10 +1,10 @@
 data:
     name: 'hpatches'
     data_dir: './data/hpatches'
-    export_dir: './data/descriptors/hpatches/'
-    alteration: 'all'  # 'all' 'i' 'v'
+    export_dir: './data/descriptors/hpatches/sp_p0/'
+    alteration: 'v'  # 'all' 'i' 'v'
     preprocessing:
-        resize: [480, 640]
+        resize: [480, 640]  # False for coco
     homography_adaptation:
         num: 0
         aggregation: 'sum'
@@ -22,18 +22,20 @@ data:
             allow_artifacts: false
 model:
     name: 'superpoint'
+    using_bn: false
     grid_size: 8
-    pretrained_model: './export/sp_0.pth'
+    pretrained_model: './export/sp_p0.pth'
     nms: 8
-    det_thresh: 0.001 # 1/65
+    det_thresh: 0.001 #0.001
     topk: 1000
     learning_rate: 0.001
     backbone:
-        backbone_type: 'VGG' #ResNetFPN
+        backbone_type: 'VGG'
         vgg:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
         feat_in_dim: 128
     des_head: #descriptor head
         feat_in_dim: 128
-        feat_out_dim: 256
+        feat_out_dim: 128 #256 for sp
+eval_iter: 600

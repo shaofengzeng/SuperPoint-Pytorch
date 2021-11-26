@@ -15,7 +15,7 @@ class COCODataset(torch.utils.data.Dataset):
 
     default_config = {
         'preprocessing': {
-            'resize': [240, 320]
+            'resize': [320,240]
         },
         'augmentation': {
             'photometric': {
@@ -88,11 +88,13 @@ class COCODataset(torch.utils.data.Dataset):
         img = cv2.resize(img, self.resize[::-1])
         pts = None if data_path['label'] is None else np.load(data_path['label'])#N*2,yx
         pts = pts.astype(np.float32)
+
         # init data dict
         img_tensor = torch.as_tensor(img.copy(), dtype=torch.float, device=self.device)
         kpts_tensor = None if pts is None else torch.as_tensor(pts, device=self.device)
         kpts_map = None if pts is None else compute_keypoint_map(kpts_tensor, img.shape, device=self.device)
         valid_mask = torch.ones(img.shape, device=self.device)
+
         data = {'raw':{'img': img_tensor,
                        'kpts': kpts_tensor,
                        'kpts_map':kpts_map,
@@ -135,7 +137,7 @@ class COCODataset(torch.utils.data.Dataset):
         img:H*W, kpts:N*2, kpts_map:HW, valid_mask:HW, homography:HW
         :return:
         """
-        sub_data = {'img': [],'kpts': [],'kpts_map': [],'mask': []}
+        sub_data = {'img': [], 'kpts_map': [],'mask': []}#remove kpts
         batch = {'raw':sub_data, 'warp':deepcopy(sub_data), 'homography': []}
         for s in samples:
             batch['homography'].append(s['homography'])
@@ -171,7 +173,7 @@ if __name__=='__main__':
     cdataloader = DataLoader(coco,collate_fn=coco.batch_collator,batch_size=1,shuffle=True)
 
     for i,d in enumerate(cdataloader):
-        if i>=3:
+        if i>=2:
             break
         img = (d['raw']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img_warp = (d['warp']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
@@ -189,16 +191,20 @@ if __name__=='__main__':
         for kp in kpts:
             cv2.circle(img_warp, (kp[1], kp[0]), radius=3, color=(0,255,0))
 
-        #mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
-        #warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+        mask = d['raw']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
+        warp_mask = d['warp']['mask'].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
 
-        img = cv2.resize(img, (img.shape[1]*2, img.shape[0]*2))
-        img_warp = cv2.resize(img_warp, (img_warp.shape[1]*2, img_warp.shape[0]*2))
+        img = cv2.resize(img, (640,480))
+        img_warp = cv2.resize(img_warp,(640,480))
 
-        plt.subplot(1,2,1)
+        plt.subplot(2,2,1)
         plt.imshow(img)
-        plt.subplot(1,2,2)
+        plt.subplot(2,2,2)
+        plt.imshow(mask)
+        plt.subplot(2,2,3)
         plt.imshow(img_warp)
+        plt.subplot(2,2,4)
+        plt.imshow(warp_mask)
         plt.show()
 
     print('Done')

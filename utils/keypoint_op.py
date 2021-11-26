@@ -60,10 +60,8 @@ def warp_points(points, homographies, device='cpu'):
     warped_points = warped_points.squeeze(dim=0)
     return warped_points
 
-
-
-
 if __name__=='__main__':
-    points = torch.tensor([],)
-    p = filter_points(points, [120,160], device='cpu')
-    print(p)
+    points = torch.tensor([[1.2,0.8],[13,9],[5.6,0.3],[0.4,0.8]])
+    homographies = torch.tensor([[[1,0.5,0],[-0.5,1,0],[0,0,1]],[[0.3,0.84,0],[-0.5,1,0],[0,0,1]]])
+    pt = warp_points(points, homographies, device='cpu')
+    print(pt)

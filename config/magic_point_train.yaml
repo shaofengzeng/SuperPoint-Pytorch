@@ -1,12 +1,12 @@
 data:
-    name: 'synthetic'
+    name: 'synthetic_shapes'
     primitives: 'all'
     truncate: {draw_ellipses: 0.3, draw_stripes: 0.2, gaussian_noise: 0.1}
     validation_size: 500
     data_dir: './data/synthetic_shapes'#where to save generated data
     preprocessing:
         blur_size: 21
-        resize: [120, 160]  ##h,w
+        resize: [120, 160]
     augmentation:
         photometric:
             enable: true
@@ -41,27 +41,25 @@ data:
 model:
     name: 'magicpoint'
     grid_size: 8
-    det_thresh: 0.001 # 1/65
-    nms: 4
-    topk: -1
-    pretrained_model: 'none'
     backbone:
         backbone_type: 'VGG' #ResNetFPN
         vgg:
             channels: [64,64,64,64,128,128,128,128]
+        resnetfpn:
+            initial_dim: 128
+            block_dims: [128,128,128]
     det_head: #detector head
         feat_in_dim: 128
-    des_head: #descriptor head,ignore
-        feat_in_dim: 128
-        feat_out_dim: 256
+    det_thresh: 0.001 # 1/65
+    nms: 4
+    topk: -1
 solver:
-    epoch: 6
+    epoch: 2
     base_lr: 0.01
     train_batch_size: 16
     test_batch_size: 16
-    save_dir: './export/'
-    model_name: 'mp_syn'
+    save_dir: './export'
+    model_name: 'mg_coco'
     detection_threshold: 0.015 #0.015
     nms: 4
     grid_size: 8
-

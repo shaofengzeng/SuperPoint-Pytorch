@@ -1,12 +1,10 @@
 #this code is mainly copied from Superpoint[https://github.com/rpautrat/SuperPoint]
 #-*-coding:utf8-*-
-from math import pi
 import cv2
-import numpy as np
+from math import pi
 from numpy.random import uniform
 from scipy.stats import truncnorm
 import kornia
-import torch
 from utils.params import dict_update
 from utils.tensor_op import erosion2d
 from utils.keypoint_op import *
@@ -80,32 +78,7 @@ def compute_valid_mask(image_shape, homographies, erosion_radius=0, device='cpu'
 
 
 def sample_homography(shape, config=None, device='cpu'):
-    """
-    ------------------m1----------------------
-    import tensorflow as tf
-    import matplotlib.pyplot as plt
 
-    c = tf.truncated_normal(shape=[10000, ], mean=0, stddev=0.05)
-
-    with tf.Session() as sess:
-        sess.run(c)
-        data = c.eval()
-    plt.hist(x=data, bins=100, color='steelblue', edgecolor='black')
-    plt.show()
-    ------------------m2----------------------
-    import scipy.stats as stats
-
-    mu, sigma = 0, 0.05
-    lower, upper = mu - 2 * sigma, mu + 2 * sigma
-
-    X = stats.truncnorm(
-        (lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-
-    plt.hist(X.rvs(10000), bins=100, color='red', edgecolor='black')
-    plt.show()
-    ------------------------------------------
-    c1==c2
-    """
     default_config = {'perspective':True, 'scaling':True, 'rotation':True, 'translation':True,
     'n_scales':5, 'n_angles':25, 'scaling_amplitude':0.2, 'perspective_amplitude_x':0.1,
     'perspective_amplitude_y':0.1, 'patch_ratio':0.5, 'max_angle':pi / 2,
@@ -194,11 +167,12 @@ def sample_homography(shape, config=None, device='cpu'):
     pts2 *= shape[np.newaxis,:]
 
     # this homography is the same with tf version and this line
-    #homography = cv2.getPerspectiveTransform(np.float32(pts1), np.float32(pts2))
-    ## equals the following 3 lines
-    pts1 = torch.tensor(pts1[np.newaxis,:], device=device, dtype=torch.float32)
-    pts2 = torch.tensor(pts2[np.newaxis,:], device=device, dtype=torch.float32)
-    homography = kornia.get_perspective_transform(pts1, pts2)
+    homography = cv2.getPerspectiveTransform(np.float32(pts1), np.float32(pts2))
+    homography = torch.tensor(homography,device=device, dtype=torch.float32).unsqueeze(dim=0)
+    ## equals to the following 3 lines
+    # pts1 = torch.tensor(pts1[np.newaxis,:], device=device, dtype=torch.float32)
+    # pts2 = torch.tensor(pts2[np.newaxis,:], device=device, dtype=torch.float32)
+    # homography0 = kornia.get_perspective_transform(pts1, pts2)
 
     #TODO: comment the follwing line if you want same result as tf version
     # since if we use homography directly ofr opencv function, for example warpPerspective
@@ -209,6 +183,7 @@ def sample_homography(shape, config=None, device='cpu'):
     #debug
     #homography = torch.eye(3,device=device).unsqueeze(dim=0)
     return homography#[1,3,3]
+
 
 def ratio_preserving_resize(img, target_size):
     '''
@@ -228,6 +203,8 @@ def ratio_preserving_resize(img, target_size):
     aug = iaa.Sequential([iaa.CropAndPad(px=(hp, wp, target_h-curr_h-hp, target_w-curr_w-wp),keep_size=False),])
     new_img = aug(images=temp_img)
     return new_img
+
+
 
 
 if __name__=='__main__':

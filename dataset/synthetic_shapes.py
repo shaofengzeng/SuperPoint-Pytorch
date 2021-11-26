@@ -146,6 +146,7 @@ class SyntheticShapes(Dataset):
         valid_mask = torch.ones_like(img_tensor)#HW
         homography = torch.eye(3, device=self.device)#3,3
 
+
         data = {'raw':{'img':img_tensor,#H,W
                        'kpts':pts,#N,2
                        'kpts_map':kp_map,#H,W
@@ -166,6 +167,8 @@ class SyntheticShapes(Dataset):
 
         ##normalize
         data['raw']['img'] = data['raw']['img']/255.#1,H,w
+        #data['raw']['img'][~data['raw']['mask'].type(torch.bool)] = data['raw']['img'].mean()
+
 
         return data #img:H,W kpts:N,2 kpts_map:H,W mask:H,W homography:3,3
 
@@ -198,19 +201,19 @@ class SyntheticShapes(Dataset):
 
 if __name__=="__main__":
     import yaml
-    import matplotlib.pyplot as plt
     from torch.utils.data import DataLoader
+    import matplotlib.pyplot as plt
 
     config_file = '../config/magic_point_train.yaml'
-    device = 'cpu'
+    device = 'cpu'#'cuda:3' if torch.cuda.is_available() else 'cpu'
     with open(config_file, 'r') as fin:
         config = yaml.safe_load(fin)
 
     syn_datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=True,
+    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=False,
                                         collate_fn=syn_datasets['train'].batch_collator),
-                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=True,
+                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=False,
                                        collate_fn=syn_datasets['test'].batch_collator)}
     for i, d in enumerate(data_loaders['train']):
         if i >= 3:
@@ -233,6 +236,4 @@ if __name__=="__main__":
         plt.subplot(1, 2, 2)
         plt.imshow(mask)
         plt.show()
-
-    print('Done')
 

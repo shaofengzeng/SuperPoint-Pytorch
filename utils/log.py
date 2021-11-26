@@ -40,7 +40,7 @@ class Log():
 if __name__=='__main__':
     import pprint
     import yaml
-    with open('../config/kptr_train.yaml', 'r') as fin:
+    with open('../config/superpoint_train.yaml', 'r') as fin:
         cfg = yaml.safe_load(fin)
     dict_cfg = pprint.pformat(cfg)
     log = Log('./').run()

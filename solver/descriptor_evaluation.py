@@ -1,14 +1,18 @@
-import numpy as np
 import cv2
+from tqdm import tqdm
+import numpy as np
 from os import path as osp
 from glob import glob
-
+from utils.archive import pickle_load
 
 def get_paths(exper_name):
     """
     Return a list of paths to the outputs of the experiment.
     """
-    return glob(osp.join(exper_name, '*.npz'))
+    data = glob(osp.join(exper_name, '*.npy'))
+    if len(data)==0:
+        data = glob(osp.join(exper_name, '*.bin'))
+    return data
 
 
 def keep_shared_points(keypoint_map, H, keep_k_points=1000):
@@ -64,7 +68,7 @@ def compute_homography(data, keep_k_points=1000, correctness_thresh=3, orb=False
     desc = data['desc'][keypoints[:, 0], keypoints[:, 1]]
     warped_desc = data['warped_desc'][warped_keypoints[:, 0],
                                       warped_keypoints[:, 1]]
-
+    print('shared keypoint number: {},{}'.format(len(keypoints), len(warped_keypoints)))
     # Match the keypoints with the warped_keypoints with nearest neighbor search
     if orb:
         desc = desc.astype(np.uint8)
@@ -129,8 +133,12 @@ def homography_estimation(exper_name, keep_k_points=1000,
     """
     paths = get_paths(exper_name)
     correctness = []
-    for path in paths:
-        data = np.load(path)
+    for path in tqdm(paths):
+        print(path)
+        if ('npy' in path) or ('npz' in path):
+            data = np.load(path,allow_pickle=True)
+        else:
+            data = pickle_load(path)
         estimates = compute_homography(data, keep_k_points, correctness_thresh, orb)
         correctness.append(estimates['correctness'])
     return np.mean(correctness)
@@ -149,7 +157,10 @@ def get_homography_matches(exper_name, keep_k_points=1000,
     paths = get_paths(exper_name)
     outputs = []
     for path in paths[:num_images]:
-        data = np.load(path)
+        if ('npy' in path) or ('npz' in path):
+            data = np.load(path)
+        else:
+            data = pickle_load(path)
         output = compute_homography(data, keep_k_points, correctness_thresh, orb)
         output['image1'] = data['img']
         output['image2'] = data['warp_img']

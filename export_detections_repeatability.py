@@ -18,13 +18,16 @@ if __name__=="__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     ##
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     p_dataset = PatchesDataset(config['data'],device=device)
     p_dataloader = DataLoader(p_dataset,batch_size=1,shuffle=False, collate_fn=p_dataset.batch_collator)
 
-    #net = MagicPoint(config['model'], input_channel=1, grid_size=8, device=device)
-    net = SuperPointBNNet(config['model'], device=device)
+    if config['model']['name'] == 'superpoint':
+        net = SuperPointBNNet(config['model'], device=device, using_bn=config['model']['using_bn'])
+    elif config['model']['name'] == 'magicpoint':
+        net = MagicPoint(config['model'], device=device)
+
     net.load_state_dict(torch.load(config['model']['pretrained_model']))
     net.to(device).eval()
 

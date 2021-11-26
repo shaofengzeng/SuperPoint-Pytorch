@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-import utils.detector_evaluation as ev
+import solver.detector_evaluation as ev
 from utils.plt import plot_imgs
 
 def get_true_keypoints(exper_name, prob_thresh=0.5):
@@ -57,7 +57,7 @@ def select_top_k(prob, thresh=0, num=300):
 
 if __name__=='__main__':
 
-    experiments = ['./data/repeatibility/superpoint//hpatches/']
+    experiments = ['./data/repeatibility/hpatches/sp_coco_tf_1']
     confidence_thresholds = [0.015, ]
 
     ## show keypoints

@@ -1,9 +1,9 @@
 data:
     name: 'coco'
-    resize: [240，320]
+    resize: [240,320] #w,h
     src_image_path: './data/coco/images/train2017/'
-    dst_label_path: './data/syn_mp_coco_rot_v1/labels/train2017/'
-    dst_image_path: './data/syn_mp_coco_rot_v1/images/train2017/'
+    dst_label_path: './data/mp_coco_v3/labels/train2017/'
+    dst_image_path: './data/mp_coco_v3/images/train2017/'
     homography_adaptation:
         num: 100
         aggregation: 'sum'
@@ -19,19 +19,18 @@ data:
             perspective_amplitude_y: 0.2
             allow_artifacts: true
             patch_ratio: 0.85
-            max_angle: 1.57
+            max_angle: 1.5707963
 model:
+    name: 'magicpoint'
+    using_bn: true
     grid_size: 8
-    det_thresh: 0.015 #0.015
+    det_thresh: 0.015
     nms: 4
     topk: -1
-    pretrained_model: './export/syn_mp_5.pth'
+    pretrained_model: './export/mp_0.pth'
     backbone:
         backbone_type: 'VGG' #ResNetFPN
         vgg:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
         feat_in_dim: 128
-    des_head: #descriptor head
-        feat_in_dim: 128
-        feat_out_dim: 256

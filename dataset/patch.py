@@ -1,3 +1,4 @@
+#-*-coding:utf8-*-
 import os
 import numpy as np
 import torch
@@ -104,13 +105,13 @@ class PatchesDataset(Dataset):
         img = self._preprocess(img)
         warped_img = self._preprocess(warped_img)
 
-        img = img/255.
-        warped_img = warped_img/255.
         ##to tenosr
-
         img = torch.as_tensor(img,dtype=torch.float32, device=self.device)#HW
         warped_img = torch.as_tensor(warped_img, dtype=torch.float32, device=self.device)#HW
         homography = torch.as_tensor(homography, device=self.device)#HW
+        ##normalize
+        img = img/255.
+        warped_img = warped_img/255.
 
         data = {'img': img, 'warp_img': warped_img, 'homography': homography}
 
@@ -141,8 +142,27 @@ class PatchesDataset(Dataset):
 
 if __name__=='__main__':
     import yaml
-    with open('../config/magic_point_repeatability.yaml','r') as fin:
+    import matplotlib.pyplot as plt
+    from torch.utils.data import DataLoader
+
+    with open('../config/detection_repeatability.yaml','r') as fin:
         config = yaml.safe_load(fin)
 
     datas = PatchesDataset(config['data'])
+    cdataloader = DataLoader(datas,collate_fn=datas.batch_collator,batch_size=1,shuffle=True)
+    for i,d in enumerate(cdataloader):
+        if i>=3:
+            break
+        img = (d['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
+        img_warp = (d['warp_img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
+        img = cv2.merge([img, img, img])
+        img_warp = cv2.merge([img_warp, img_warp, img_warp])
+        ##
+
+        plt.subplot(1,2,1)
+        plt.imshow(img)
+        plt.subplot(1,2,2)
+        plt.imshow(img_warp)
+        plt.show()
+
     print('Done')
