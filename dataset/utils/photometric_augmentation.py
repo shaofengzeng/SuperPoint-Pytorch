@@ -142,8 +142,9 @@ class PhotoAugmentor:
         if image.dtype!=np.uint8:
             image = image.astype(np.int).astype(np.uint8)
 
-        for i in indices:
-            image = getattr(self, self.primitives[i])(image)
+        for i, pind in enumerate(indices):
+            if i==pind:
+                image = getattr(self, self.primitives[i])(image)
         return image.astype(np.float32)
 
 
