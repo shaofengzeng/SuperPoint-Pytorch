@@ -68,5 +68,5 @@ solver:
     #sync_bn: true
     save_dir: './export/'
     model_name: 'sp_coco_tf'
-    detection_threshold: 0.015
-    nms: 4
+    #detection_threshold: 0.015
+    #nms: 4

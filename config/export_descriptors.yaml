@@ -22,7 +22,7 @@ data:
             allow_artifacts: false
 model:
     name: 'superpoint'
-    using_bn: false
+    using_bn: true
     grid_size: 8
     pretrained_model: './export/sp_p0.pth'
     nms: 8
@@ -38,4 +38,3 @@ model:
     des_head: #descriptor head
         feat_in_dim: 128
         feat_out_dim: 128 #256 for sp
-eval_iter: 600

@@ -204,23 +204,23 @@ if __name__=="__main__":
     from torch.utils.data import DataLoader
     import matplotlib.pyplot as plt
 
-    config_file = '../config/magic_point_train.yaml'
+    config_file = '../config/magic_point_syn_train.yaml'
     device = 'cpu'#'cuda:3' if torch.cuda.is_available() else 'cpu'
     with open(config_file, 'r') as fin:
         config = yaml.safe_load(fin)
 
     syn_datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=False,
+    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=True,
                                         collate_fn=syn_datasets['train'].batch_collator),
-                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=False,
+                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=True,
                                        collate_fn=syn_datasets['test'].batch_collator)}
     for i, d in enumerate(data_loaders['train']):
         if i >= 3:
             break
         img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img = cv2.merge([img, img, img])
-        ##
+
         kpts = np.where(d['raw']['kpts_map'][0].squeeze().cpu().numpy())
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)

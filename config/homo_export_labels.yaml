@@ -1,9 +1,9 @@
 data:
     name: 'coco'
-    resize: [240,320] #w,h
+    resize: [240,320] #h,w
     src_image_path: './data/coco/images/train2017/'
-    dst_label_path: './data/mp_coco_v3/labels/train2017/'
-    dst_image_path: './data/mp_coco_v3/images/train2017/'
+    dst_label_path: './data/mp_syn_coco_v1/labels/train2017/'
+    dst_image_path: './data/mp_syn_coco_v1/images/train2017/'
     homography_adaptation:
         num: 100
         aggregation: 'sum'
@@ -22,7 +22,6 @@ data:
             max_angle: 1.5707963
 model:
     name: 'magicpoint'
-    using_bn: true
     grid_size: 8
     det_thresh: 0.015
     nms: 4

@@ -1,8 +1,8 @@
 #-*-coding:utf8-*-
 import torch
 from solver.nms import box_nms
-from model.modules.cnn.vgg_backbone import VGGBackbone,VGGBackboneBN
-from model.modules.cnn.cnn_heads import DetectorHead, DescriptorHead
+from model.modules.cnn.vgg_backbone import VGGBackboneBN
+from model.modules.cnn.cnn_heads import DetectorHead
 
 
 

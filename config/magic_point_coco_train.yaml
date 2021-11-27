@@ -55,6 +55,6 @@ solver:
     test_batch_size: 32
     save_dir: './export'
     model_name: 'mg_coco'
-    detection_threshold: 0.001 #0.015
-    nms: 4
+    #detection_threshold: 0.001 #0.015
+    #nms: 4
 

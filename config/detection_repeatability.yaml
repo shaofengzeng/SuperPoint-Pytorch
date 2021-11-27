@@ -1,4 +1,5 @@
 data:
+    name: 'hpatches'
     data_dir: './data/hpatches' #./data/coco/images/patches
     export_dir: './data/repeatibility/hpatches/sp_coco_tf_1'
     alteration: 'all'  # 'all' 'i' 'v'
@@ -37,5 +38,4 @@ model:
     learning_rate: 0.001
     nms: 4
     topk: 1000
-    det_thresh: 0.015 # 1/65
-eval_iter: 1000
+    det_thresh: 0.001 # 0.015

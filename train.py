@@ -147,7 +147,7 @@ if __name__=='__main__':
     if not os.path.exists(config['solver']['save_dir']):
         os.makedirs(config['solver']['save_dir'])
 
-    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     ##Make Dataloader
     data_loaders = None
@@ -167,7 +167,6 @@ if __name__=='__main__':
                                            collate_fn=datasets['test'].batch_collator)}
     ##Make model
     if config['model']['name'] == 'superpoint':
-        config['model']['des_head']['feat_out_dim'] = 256
         model = SuperPointBNNet(config['model'], device=device, using_bn=config['model']['using_bn'])
     elif config['model']['name'] == 'magicpoint':
         model = MagicPoint(config['model'], device=device)

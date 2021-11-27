@@ -188,11 +188,12 @@ if __name__=='__main__':
         ##
         points = [torch.stack(torch.where(e)).T for e in pred]
         points = [pt.cpu().numpy() for pt in points]
-        # ##save points
-        # for fname, pt in zip(batch_fnames, points):
-        #     cv2.imwrite(os.path.join(config['data']['dst_image_path'], fname), img)
-        #     np.save(os.path.join(config['data']['dst_label_path'], fname+'.npy'), pt)
-        #     print('{}, {}'.format(os.path.join(config['data']['dst_label_path'], fname+'.npy'), len(pt)))
+
+        ##save points
+        for fname, pt in zip(batch_fnames, points):
+            cv2.imwrite(os.path.join(config['data']['dst_image_path'], fname), img)
+            np.save(os.path.join(config['data']['dst_label_path'], fname+'.npy'), pt)
+            print('{}, {}'.format(os.path.join(config['data']['dst_label_path'], fname+'.npy'), len(pt)))
 
         ## debug
         for img, pts in zip(batch_raw_imgs,points):
@@ -201,7 +202,7 @@ if __name__=='__main__':
                 cv2.circle(debug_img, (int(pt[1]),int(pt[0])), 1, (0,255,0), thickness=-1)
             plt.imshow(debug_img)
             plt.show()
-        if idx>2:
+        if idx>=2:
             break
         batch_fnames,batch_imgs,batch_raw_imgs = [],[],[]
     print('Done')
