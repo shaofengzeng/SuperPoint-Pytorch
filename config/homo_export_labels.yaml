@@ -1,6 +1,6 @@
 data:
     name: 'coco'
-    resize: [240,320] #h,w
+    resize: [240,320]
     src_image_path: './data/coco/images/train2017/'
     dst_label_path: './data/mp_syn_coco_v1/labels/train2017/'
     dst_image_path: './data/mp_syn_coco_v1/images/train2017/'
@@ -25,8 +25,8 @@ model:
     grid_size: 8
     det_thresh: 0.015
     nms: 4
-    topk: -1
-    pretrained_model: './export/mp_0.pth'
+    topk: 0
+    pretrained_model: './export/mp_syn_0.pth'
     backbone:
         backbone_type: 'VGG' #ResNetFPN
         vgg:

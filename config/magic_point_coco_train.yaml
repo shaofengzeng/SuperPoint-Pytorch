@@ -12,7 +12,7 @@ data:
                 'random_brightness', 'random_contrast', 'additive_speckle_noise',
                 'additive_gaussian_noise', 'additive_shade', 'motion_blur' ]
             params:
-                random_brightness: {max_abs_change: 0.2}
+                random_brightness: {max_abs_change: 50}
                 random_contrast: {strength_range: [0.3, 1.5]}
                 additive_gaussian_noise: {stddev_range: [0, 10]}
                 additive_speckle_noise: {prob_range: [0, 0.0035]}
