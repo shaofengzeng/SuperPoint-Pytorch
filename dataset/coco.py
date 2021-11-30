@@ -13,33 +13,6 @@ from dataset.utils.photometric_augmentation import *
 
 class COCODataset(torch.utils.data.Dataset):
 
-    default_config = {
-        'preprocessing': {
-            'resize': [320,240]
-        },
-        'augmentation': {
-            'photometric': {
-                'train_enable': False,
-                'test_enable': False,
-                'primitives': 'all',
-                'params': {},
-                'random_order': True,
-            },
-            'homographic': {
-                'train_enable': False,
-                'test_enable': False,
-                'params': {},
-                'valid_border_margin': 0,
-            },
-        },
-        'warped_pair': {
-            'enable': False,
-            'params': {},
-            'valid_border_margin': 0,
-        },
-    }
-
-
     def __init__(self, config, is_train, device='cpu'):
 
         super(COCODataset, self).__init__()
@@ -48,7 +21,7 @@ class COCODataset(torch.utils.data.Dataset):
         self.resize = tuple(config['resize'])
         self.photo_augmentor = PhotoAugmentor(config['augmentation']['photometric'])
         # load config
-        self.config = dict_update(getattr(self, 'default_config', {}), config)
+        self.config = config #dict_update(getattr(self, 'default_config', {}), config)
         # get images
         if self.is_train:
             self.samples = self._init_data(config['image_train_path'], config['label_train_path'])
@@ -111,17 +84,19 @@ class COCODataset(torch.utils.data.Dataset):
             photo_enable = self.config['augmentation']['photometric']['test_enable']
             homo_enable = self.config['augmentation']['homographic']['test_enable']
 
-        if photo_enable:
-            img_warp = self.photo_augmentor(img.copy())
-            data['warp']['img'] = torch.as_tensor(img_warp, dtype=torch.float,device=self.device)
 
         if homo_enable and data['raw']['kpts'] is not None:#homographic augmentation
             # return dict{warp:{img:[H,W], point:[N,2], valid_mask:[H,W], homography: [3,3]; tensors}}
-            data_warp = homographic_aug_pipline(data['warp']['img'],
+            data_homo = homographic_aug_pipline(data['warp']['img'],
                                                 data['warp']['kpts'],
                                                 self.config['augmentation']['homographic'],
                                                 device=self.device)
-            data.update(data_warp)
+            data.update(data_homo)
+
+        if photo_enable:
+            photo_img = data['warp']['img'].cpu().numpy().round().astype(np.uint8)
+            photo_img = self.photo_augmentor(photo_img)
+            data['warp']['img'] = torch.as_tensor(photo_img, dtype=torch.float,device=self.device)
 
         ##normalize
         data['raw']['img'] = data['raw']['img']/255.
@@ -173,7 +148,7 @@ if __name__=='__main__':
     cdataloader = DataLoader(coco,collate_fn=coco.batch_collator,batch_size=1,shuffle=True)
 
     for i,d in enumerate(cdataloader):
-        if i>=2:
+        if i>=10:
             break
         img = (d['raw']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img_warp = (d['warp']['img']*255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
