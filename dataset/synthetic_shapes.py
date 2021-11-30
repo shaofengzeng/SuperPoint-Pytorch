@@ -12,54 +12,6 @@ from dataset.utils.photometric_augmentation import PhotoAugmentor
 
 
 class SyntheticShapes(Dataset):
-    default_config = {
-            'primitives': 'all',
-            'truncate': {},
-            'validation_size': -1,
-            'test_size': -1,
-            'suffix': None,
-            'add_augmentation_to_test_set': False,
-            'generation': {
-                'split_sizes': {'training': 10000, 'validation': 200, 'test': 500},
-                'image_size': [960, 1280],
-                'random_seed': 0,
-                'params': {
-                    'generate_background': {
-                        'min_kernel_size': 150, 'max_kernel_size': 500,
-                        'min_rad_ratio': 0.02, 'max_rad_ratio': 0.031},
-                    'draw_stripes': {'transform_params': (0.1, 0.1)},
-                    'draw_multiple_polygons': {'kernel_boundaries': (50, 100)}
-                },
-            },
-            'preprocessing': {
-                'resize': [240, 320],
-                'blur_size': 11,
-            },
-            'augmentation': {
-                'photometric': {
-                    'enable': False,
-                    'primitives': 'all',
-                    'params': {},
-                    'random_order': True,
-                },
-                'homographic': {
-                    'enable': False,
-                    'params': {},
-                    'valid_border_margin': 0,
-                },
-            }
-    }
-    drawing_primitives = [
-            'draw_lines',
-            'draw_polygon',
-            'draw_multiple_polygons',
-            'draw_ellipses',
-            'draw_star',
-            'draw_checkerboard',
-            'draw_stripes',
-            'draw_cube',
-            'gaussian_noise'
-    ]
 
     def __init__(self, config, task, device='cpu'):
         """
@@ -70,7 +22,7 @@ class SyntheticShapes(Dataset):
         """
         # Update config
         self.device = device
-        self.config = dict_update(getattr(self, 'default_config', {}), config)
+        self.config = config #dict_update(getattr(self, 'default_config', {}), config)
         self.task = task if isinstance(task, (list, tuple)) else [task, ]
         self.photo_aug = PhotoAugmentor(config['augmentation']['photometric'])
         #load data, if no data generate some
@@ -154,21 +106,21 @@ class SyntheticShapes(Dataset):
                         },
                 'homography': homography}#3,3
 
-        #augmentations
-        if self.config['augmentation']['photometric']['enable']:#image augmentation
-            img_aug = self.photo_aug(img)
-            data['raw']['img'] = torch.as_tensor(img_aug, device=self.device, dtype=torch.float32)
+
         if self.config['augmentation']['homographic']['enable']:##homographic augmentation
             # input format img:[1,1,H,W], point:[N,2]
             homo_data = homographic_aug_pipline(data['raw']['img'].unsqueeze(0).unsqueeze(0), data['raw']['kpts'],
                                                 self.config['augmentation']['homographic'], device=self.device)
             data['raw'] = homo_data['warp']
             data['homography'] = homo_data['homography']
+        #augmentations
+        if self.config['augmentation']['photometric']['enable']:#image augmentation
+            photo_img = data['raw']['img'].cpu().numpy().round().astype(np.uint8)
+            photo_img = self.photo_aug(photo_img)
+            data['raw']['img'] = torch.as_tensor(photo_img, device=self.device, dtype=torch.float32)
 
         ##normalize
         data['raw']['img'] = data['raw']['img']/255.#1,H,w
-        #data['raw']['img'][~data['raw']['mask'].type(torch.bool)] = data['raw']['img'].mean()
-
 
         return data #img:H,W kpts:N,2 kpts_map:H,W mask:H,W homography:3,3
 
@@ -220,7 +172,7 @@ if __name__=="__main__":
             break
         img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img = cv2.merge([img, img, img])
-
+        ##
         kpts = np.where(d['raw']['kpts_map'][0].squeeze().cpu().numpy())
         kpts = np.vstack(kpts).T
         kpts = np.round(kpts).astype(np.int)
