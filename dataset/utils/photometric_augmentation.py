@@ -18,12 +18,14 @@ class PhotoAugmentor:
         self.config = config
         self.primitives = config['primitives']
 
-        self.colorjitter_brightness = transforms.ColorJitter(
-            brightness=config['params']['random_brightness']['max_abs_change']
-        )
-        self.colorjitter_contrast = transforms.ColorJitter(
-            contrast=tuple(config['params']['random_contrast']['strength_range'])
-        )
+        self.brightness_max_change = config['params']['random_brightness']['max_abs_change']
+        self.contrast_factors = tuple(config['params']['random_contrast']['strength_range'])
+        # self.colorjitter_brightness = transforms.ColorJitter(
+        #     brightness=config['params']['random_brightness']['max_abs_change']
+        # )
+        # self.colorjitter_contrast = transforms.ColorJitter(
+        #     contrast=tuple(config['params']['random_contrast']['strength_range'])
+        # )
 
     def additive_gaussian_noise(self, image):
         stddev_range = self.config['params']['additive_gaussian_noise']['stddev_range']
@@ -34,7 +36,7 @@ class PhotoAugmentor:
         stddev = np.random.uniform(stddev_range[0], stddev_range[1])
         noise = np.random.normal(scale=stddev,size=image.shape)
         noisy_image = np.clip(image+noise, 0, 255)
-        return noisy_image.round().astype(np.uint8)
+        return noisy_image
 
 
     def additive_speckle_noise(self, image):
@@ -48,27 +50,39 @@ class PhotoAugmentor:
         sample = np.random.uniform(size=image.shape)
         noisy_image = np.where(sample<=prob, np.zeros_like(image), image)
         noisy_image = np.where(sample>=(1. - prob), 255.*np.ones_like(image), noisy_image)
-
-        return np.clip(noisy_image.round(),0,255).astype(np.uint8)
+        noisy_image = np.clip(noisy_image.round(),0,255)
+        return noisy_image
 
 
     def random_brightness(self, image):
-        if isinstance(image, np.ndarray):
-            image = Image.fromarray(image)
-        image = self.colorjitter_brightness(image)
-        image = np.asarray(image)#to numpy
-        image = np.clip(image, 0, 255)
-        return image
+        # if not isinstance(image.dtype, np.uint8):
+        #     image = image.round().astype(np.uint8)
+        # if isinstance(image, np.ndarray):
+        #     image = Image.fromarray(image)
+        # image = self.colorjitter_brightness(image)
+        # image = np.asarray(image)  # to numpy
+
+        delta = np.random.uniform(low=-self.brightness_max_change,high=self.brightness_max_change, size=1)[0]
+        image = image + delta
+        image = np.clip(image, 0, 255.0)
+        return image.astype(np.float32)
 
 
     def random_contrast(self, image):
-        if isinstance(image, np.ndarray):
-            image = Image.fromarray(image)
-        image = self.colorjitter_contrast(image)
-        image = np.asarray(image)#to numpy
-        image = np.clip(image, 0, 255)
-        return image
+        # if not isinstance(image.dtype, np.uint8):
+        #     image = image.round().astype(np.uint8)
+        # if isinstance(image, np.ndarray):
+        #     image = Image.fromarray(image)
+        # image = self.colorjitter_contrast(image)
+        # image = np.asarray(image)#to numpy
 
+        contrast_factor = np.random.uniform(low=self.contrast_factors[0],
+                                            high=self.contrast_factors[1],
+                                            size=1)[0]
+        mean = image.mean()
+        image = (image-mean)*contrast_factor+mean
+        image = np.clip(image, 0, 255.)
+        return image.astype(np.float32)
 
     def additive_shade(self, image):
         nb_ellipses = self.config['params']['additive_shade']['nb_ellipses']
@@ -100,7 +114,7 @@ class PhotoAugmentor:
         shaded = _py_additive_shade(image)
         res = np.reshape(shaded, image.shape)
 
-        return np.clip(res.round(),0,255).astype(np.uint8)
+        return np.clip(res.round(),0,255)
 
 
     def motion_blur(self, image):
@@ -139,12 +153,16 @@ class PhotoAugmentor:
         indices = np.arange(len(self.primitives))
         np.random.shuffle(indices)
 
-        if image.dtype!=np.uint8:
-            image = image.astype(np.int).astype(np.uint8)
+        def step(i, image):
+            for j in range(len(self.primitives)):
+                if j == indices[i]:
+                    image = getattr(self, self.primitives[j])(image)
+            return image
 
-        for i,ind in enumerate(indices):
-            if i==ind:
-                image = getattr(self, self.primitives[ind])(image)
+        # if image.dtype!=np.uint8:
+        #     image = image.astype(np.int).astype(np.uint8)
+        for i in range(len(self.primitives)):
+            image = step(i, image)
         return image.astype(np.float32)
 
 
