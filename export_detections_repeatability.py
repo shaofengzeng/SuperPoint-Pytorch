@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 from torch.utils.data import DataLoader
 from dataset.patch import PatchesDataset
+from dataset.synthetic_shapes import SyntheticShapes
 from model.magic_point import MagicPoint
 from model.superpoint_bn import SuperPointBNNet
 
@@ -17,11 +18,14 @@ if __name__=="__main__":
     output_dir = config['data']['export_dir']
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    ##
-    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
-    p_dataset = PatchesDataset(config['data'],device=device)
-    p_dataloader = DataLoader(p_dataset,batch_size=1,shuffle=False, collate_fn=p_dataset.batch_collator)
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
+    if config['data']['name']=='synthetic':
+        dataset_ = SyntheticShapes(config['data'], task='training', device=device)
+    elif config['data']['name'] == 'hpatches':
+        dataset_ = PatchesDataset(config['data'],device=device)
+
+    p_dataloader = DataLoader(dataset_, batch_size=1, shuffle=False, collate_fn=dataset_.batch_collator)
 
     if config['model']['name'] == 'superpoint':
         net = SuperPointBNNet(config['model'], device=device, using_bn=config['model']['using_bn'])
