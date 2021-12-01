@@ -11,7 +11,7 @@ This work is based on:
 
 # Performance
 * Detector repeatibility: xxx
-* Homography estimation on HPatches: 0.698
+* Homography estimation on HPatches-v: 0.698
 
 # New Update (09/04/2021)
 * Convert tf pretrained weight to Pytorch   
