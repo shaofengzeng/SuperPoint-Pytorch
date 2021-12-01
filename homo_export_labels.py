@@ -153,7 +153,13 @@ if __name__=='__main__':
     image_list = os.listdir(config['data']['src_image_path'])
     image_list = [os.path.join(config['data']['src_image_path'], fname) for fname in image_list]
 
-    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
+    # image_list = []
+    # with open('./coco_train_list.txt', 'r') as fin:
+    #     for line in fin:
+    #         image_list.append(line.strip())
+    # image_list = image_list[0:int(len(image_list)*0.5)]
+
+    device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 
     net = MagicPoint(config['model'], input_channel=1, grid_size=8,device=device)
     net.load_state_dict(torch.load(config['model']['pretrained_model']))
@@ -195,14 +201,14 @@ if __name__=='__main__':
             np.save(os.path.join(config['data']['dst_label_path'], fname+'.npy'), pt)
             print('{}, {}'.format(os.path.join(config['data']['dst_label_path'], fname+'.npy'), len(pt)))
 
-        ## debug
-        for img, pts in zip(batch_raw_imgs,points):
-            debug_img = cv2.merge([img, img, img])
-            for pt in pts:
-                cv2.circle(debug_img, (int(pt[1]),int(pt[0])), 1, (0,255,0), thickness=-1)
-            plt.imshow(debug_img)
-            plt.show()
-        if idx>=2:
-            break
+        # ## debug
+        # for img, pts in zip(batch_raw_imgs,points):
+        #     debug_img = cv2.merge([img, img, img])
+        #     for pt in pts:
+        #         cv2.circle(debug_img, (int(pt[1]),int(pt[0])), 1, (0,255,0), thickness=-1)
+        #     plt.imshow(debug_img)
+        #     plt.show()
+        # if idx>=2:
+        #     break
         batch_fnames,batch_imgs,batch_raw_imgs = [],[],[]
     print('Done')
