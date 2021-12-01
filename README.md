@@ -5,9 +5,13 @@ SuperPoint: Self-Supervised Interest Point Detection and Description
 # Thanks  
 This work is based on:  
 - Tensorflow implementation by [Rémi Pautrat and Paul-Edouard Sarlin](https://github.com/rpautrat/SuperPoint)  
-- Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork). 
+- Official [SuperPointPretrainedNetwork](https://github.com/magicleap/SuperPointPretrainedNetwork).
+- [pytorch-superpoint](https://github.com/eric-yyjau/pytorch-superpoint) 
 - [Kornia](https://kornia.github.io/)  
 
+# Performance
+* Detector repeatibility: xxx
+* Homography estimation on HPatches: 0.698
 
 # New Update (09/04/2021)
 * Convert tf pretrained weight to Pytorch   
