@@ -153,16 +153,11 @@ class PhotoAugmentor:
         indices = np.arange(len(self.primitives))
         np.random.shuffle(indices)
 
-        def step(i, image):
-            for j in range(len(self.primitives)):
-                if j == indices[i]:
-                    image = getattr(self, self.primitives[j])(image)
-            return image
-
         # if image.dtype!=np.uint8:
         #     image = image.astype(np.int).astype(np.uint8)
-        for i in range(len(self.primitives)):
-            image = step(i, image)
+        for i in indices:
+            image = getattr(self, self.primitives[i])(image)
+
         return image.astype(np.float32)
 
 
