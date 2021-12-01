@@ -121,15 +121,15 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     ##
     dot_product_desc = torch.sum(descriptors * warped_descriptors, dim=1)
 
-    #dot_product_desc = F.relu(dot_product_desc)
+    dot_product_desc = F.relu(dot_product_desc)
 
-    # ##l2_normalization
-    # dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
-    #                                              p=2,
-    #                                              dim=3), [batch_size, Hc, Wc, Hc, Wc])
-    # dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
-    #                                              p=2,
-    #                                              dim=1), [batch_size, Hc, Wc, Hc, Wc])
+    ##l2_normalization
+    dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc, Wc, Hc * Wc]),
+                                                 p=2,
+                                                 dim=3), [batch_size, Hc, Wc, Hc, Wc])
+    dot_product_desc = torch.reshape(F.normalize(torch.reshape(dot_product_desc, [batch_size, Hc * Wc, Hc, Wc]),
+                                                 p=2,
+                                                 dim=1), [batch_size, Hc, Wc, Hc, Wc])
 
     # dot_product_desc[id_batch, h, w, h', w'] is the dot product between the
     # descriptor at position (h, w) in the original descriptors map and the
@@ -153,7 +153,7 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     positive_sum = torch.sum(valid_mask*lambda_d*s*positive_dist) / normalization
     negative_sum = torch.sum(valid_mask*(1-s)*negative_dist) / normalization
 
-    print('p_sum:{:.8}, n_sum:{:.8}'.format(positive_sum, negative_sum))
+    print('positive_dist:{}, negative_dist:{}'.format(positive_sum, negative_sum))
 
     loss = lambda_loss*torch.sum(valid_mask * loss)/normalization
 
