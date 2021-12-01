@@ -1,6 +1,6 @@
 data:
-    name: 'hpatches'
-    data_dir: './data/hpatches' #./data/coco/images/patches
+    name: 'hpatches' #hpatches
+    data_dir: './data/hpatches' #./data/hpatches
     export_dir: './data/repeatibility/hpatches/sp_coco_tf_1'
     alteration: 'all'  # 'all' 'i' 'v'
     preprocessing:
@@ -20,9 +20,9 @@ data:
             allow_artifacts: true
             patch_ratio: 0.5
 model:
-    name: 'superpoint'
+    name: 'superpoint' #superpoint
     using_bn: true
-    pretrained_model: './export/sp_0.pth'
+    pretrained_model: './export/mg_syn_0.pth'
     grid_size: 8
     backbone:
         backbone_type: 'VGG' #ResNetFPN
@@ -38,4 +38,4 @@ model:
     learning_rate: 0.001
     nms: 4
     topk: 1000
-    det_thresh: 0.001 # 0.015
+    det_thresh: 0.001 # 0.001
