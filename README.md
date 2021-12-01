@@ -59,10 +59,9 @@ This work is based on:
           `python homo_export_labels.py #using your data dirs`
     - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)       
           `python train.py ./config/magic_point_coco_train.py #with correct data dirs` 
-    - 2.4 Train SuperPoint following the steps in **Training Steps** (>12 hours)    
+    - 2.4 Train SuperPoint (>12 hours)    
           `python train.py ./config/superpoint_train.py #with correct data dirs`  
-    - others. Validate detection repeatability or description
-              (Better in training mode if you also have eval problem stated in **Existing Problems**)  
+    - others. Validate detection repeatability or description  
                    
         ```
         python export_detections_repeatability.py #(very fast)  
