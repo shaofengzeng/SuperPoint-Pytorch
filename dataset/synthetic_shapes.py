@@ -156,13 +156,14 @@ class SyntheticShapes(Dataset):
                 'homography': homography}#3,3
 
 
+        #augmentations
         if self.config['augmentation']['homographic']['enable']:##homographic augmentation
             # input format img:[1,1,H,W], point:[N,2]
             homo_data = homographic_aug_pipline(data['raw']['img'].unsqueeze(0).unsqueeze(0), data['raw']['kpts'],
                                                 self.config['augmentation']['homographic'], device=self.device)
             data['raw'] = homo_data['warp']
             data['homography'] = homo_data['homography']
-        #augmentations
+
         if self.config['augmentation']['photometric']['enable']:#image augmentation
             photo_img = data['raw']['img'].cpu().numpy().round().astype(np.uint8)
             photo_img = self.photo_aug(photo_img)
@@ -217,7 +218,7 @@ if __name__=="__main__":
                     'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=True,
                                        collate_fn=syn_datasets['test'].batch_collator)}
     for i, d in enumerate(data_loaders['train']):
-        if i >= 3:
+        if i >= 10:
             break
         img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
         img = cv2.merge([img, img, img])
