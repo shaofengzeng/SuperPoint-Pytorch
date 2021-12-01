@@ -156,6 +156,11 @@ class SyntheticShapes(Dataset):
                 'homography': homography}#3,3
 
 
+        if self.config['augmentation']['photometric']['enable']:#image augmentation
+            photo_img = data['raw']['img'].cpu().numpy().round().astype(np.uint8)
+            photo_img = self.photo_aug(photo_img)
+            data['raw']['img'] = torch.as_tensor(photo_img, device=self.device, dtype=torch.float32)
+
         #augmentations
         if self.config['augmentation']['homographic']['enable']:##homographic augmentation
             # input format img:[1,1,H,W], point:[N,2]
@@ -163,11 +168,6 @@ class SyntheticShapes(Dataset):
                                                 self.config['augmentation']['homographic'], device=self.device)
             data['raw'] = homo_data['warp']
             data['homography'] = homo_data['homography']
-
-        if self.config['augmentation']['photometric']['enable']:#image augmentation
-            photo_img = data['raw']['img'].cpu().numpy().round().astype(np.uint8)
-            photo_img = self.photo_aug(photo_img)
-            data['raw']['img'] = torch.as_tensor(photo_img, device=self.device, dtype=torch.float32)
 
         ##normalize
         data['raw']['img'] = data['raw']['img']/255.#1,H,w
