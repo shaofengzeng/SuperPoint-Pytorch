@@ -21,7 +21,7 @@ data:
                 additive_shade:
                     transparency_range: [-0.5, 0.8]
                     kernel_size_range: [50, 100]
-                    nb_ellipses: 10
+                    nb_ellipses: 20
                 motion_blur: {max_kernel_size: 7}
         homographic:
             enable: true
@@ -53,11 +53,9 @@ model:
     topk: -1
 solver:
     grid_size: 8
-    epoch: 6
-    base_lr: 0.01
+    epoch: 10
+    base_lr: 0.001
     train_batch_size: 16
     test_batch_size: 16
     save_dir: './export'
     model_name: 'mg_syn'
-    #detection_threshold: 0.001
-    #nms: 4
