@@ -8,7 +8,7 @@ from utils.tensor_op import pixel_shuffle_inv
 
 
 def loss_func(config, data, prob, desc=None, prob_warp=None, desc_warp=None, device='cpu'):
-    ###
+
     det_loss = detector_loss(data['raw']['kpts_map'],
                              prob['logits'],
                              data['raw']['mask'],
@@ -57,19 +57,19 @@ def detector_loss(keypoint_map, logits, valid_mask=None, grid_size=8, device='cp
     valid_mask = torch.ones_like(keypoint_map) if valid_mask is None else valid_mask
     valid_mask = valid_mask.unsqueeze(1)
     valid_mask = pixel_shuffle_inv(valid_mask, grid_size)#[B, 64, H/8, W/8]
-    valid_mask = torch.prod(valid_mask, dim=1).unsqueeze(dim=1)#[B,H/8,W/8]
+    valid_mask = torch.prod(valid_mask, dim=1).unsqueeze(dim=1)#[B,1,H/8,W/8]
 
-    ##method 1
+    ## method 1
     #loss0 = F.cross_entropy(logits, labels)
-    # ##method 2
-    # ##method 2 equals to tf.nn.sparse_softmax_cross_entropy()
-    epsilon = 1e-5
+    ## method 2
+    ## method 2 equals to tf.nn.sparse_softmax_cross_entropy()
+
+    epsilon = 1e-6
     loss = F.log_softmax(logits,dim=1)
     mask = valid_mask.type(torch.float32)
     mask /= (torch.mean(mask)+epsilon)
     loss = torch.mul(loss, mask)
     loss = F.nll_loss(loss,labels)
-
     return loss
 
 
@@ -171,5 +171,52 @@ def precision_recall(pred, keypoint_map, valid_mask):
 
 
 if __name__=='__main__':
-    pass
+    '''
+    :param keypoint_map: [B,H,W]
+    :param logits: [B,65,Hc,Wc]
+    :param valid_mask:[B, H, W]
+    :param grid_size: 8 default
+    '''
 
+    import tensorflow as tf
+    def detector_loss_tf(keypoint_map, logits, valid_mask=None):
+        # Convert the boolean labels to indices including the "no interest point" dustbin
+        labels = tf.to_float(keypoint_map[..., tf.newaxis])  # for GPU
+        labels = tf.space_to_depth(labels, 8)
+        shape = tf.concat([tf.shape(labels)[:3], [1]], axis=0)
+        labels = tf.concat([2 * labels, tf.ones(shape)], 3)
+        # Add a small random matrix to randomly break ties in argmax
+        labels = tf.argmax(labels + tf.random_uniform(tf.shape(labels), 0, 0.1),
+                           axis=3)
+
+        # Mask the pixels if bordering artifacts appear
+        valid_mask = tf.ones_like(keypoint_map) if valid_mask is None else valid_mask
+        valid_mask = tf.to_float(valid_mask[..., tf.newaxis])  # for GPU
+        valid_mask = tf.space_to_depth(valid_mask, 8)
+        valid_mask = tf.reduce_prod(valid_mask, axis=3)  # AND along the channel dim
+
+        loss = tf.losses.sparse_softmax_cross_entropy(
+            labels=labels, logits=logits, weights=valid_mask)
+        return loss
+
+
+
+    import cv2
+    keypoint_map = np.random.randint(0,2,(2,24,32))
+    logits = np.random.uniform(-0.1,0.1, (2,65,3,4)).astype(np.float32)
+    h = np.array([[1,0.5,0],[0.5,1,0],[0,0,1]]).astype(np.float32)
+    mask = cv2.warpPerspective(np.ones([24,32]), h, (32,24))
+    mask = np.stack([mask,mask])
+    mask = mask.astype(np.int).astype(np.float32)
+    ##
+    loss = detector_loss_tf(keypoint_map, np.transpose(logits, (0,2,3,1)), valid_mask=mask)
+
+    with tf.Session() as sess:
+        l = sess.run(loss)
+        print(l)
+
+    keypoint_map = torch.tensor(keypoint_map)
+    logits = torch.tensor(logits)
+    mask = torch.tensor(mask)
+    loss = detector_loss(keypoint_map, logits, valid_mask=mask, grid_size=8, device='cpu')
+    print(loss)
