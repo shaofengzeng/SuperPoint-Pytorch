@@ -54,3 +54,5 @@ def box_nms(prob, size=4, iou=0.1, min_prob=0.015, keep_top_k=-1):
 
     return nms_prob.unsqueeze(dim=0)
 
+if __name__=='__main__':
+    pass
