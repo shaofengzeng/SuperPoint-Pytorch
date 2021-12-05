@@ -52,10 +52,12 @@ def train_eval(model, dataloader, config):
             for i, data in tqdm(enumerate(dataloader['train'])):
                 prob, desc, prob_warp, desc_warp = None, None, None, None
                 if config['model']['name']=='magicpoint' and config['data']['name']=='coco':
-                    raw_outputs = model(data['warp'])
-                else:
-                    raw_outputs = model(data['raw'])
+                    data['raw'] = data['warp']
+                    data['warp'] = None
 
+                raw_outputs = model(data['raw'])
+
+                ##for superpoint
                 if config['model']['name']!='magicpoint':#superpoint
                     warp_outputs = model(data['warp'])
                     prob, desc, prob_warp, desc_warp = raw_outputs['det_info'], \
@@ -161,9 +163,9 @@ if __name__=='__main__':
     elif config['data']['name'] == 'synthetic':
         datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-        data_loaders = {'train': DataLoader(datasets['train'], batch_size=16, shuffle=True,
+        data_loaders = {'train': DataLoader(datasets['train'], batch_size=config['solver']['train_batch_size'], shuffle=True,
                                             collate_fn=datasets['train'].batch_collator),
-                        'test': DataLoader(datasets['test'], batch_size=16, shuffle=True,
+                        'test': DataLoader(datasets['test'], batch_size=config['solver']['test_batch_size'], shuffle=True,
                                            collate_fn=datasets['test'].batch_collator)}
     ##Make model
     if config['model']['name'] == 'superpoint':
