@@ -61,12 +61,12 @@ solver:
         negative_margin: 0.2
         lambda_d: 0.05
         lambda_loss: 10000
-    epoch: 6
+    epoch: 8
     base_lr: 0.001 #0.0001
     train_batch_size: 2
     test_batch_size: 2
-    #sync_bn: true
     save_dir: './export/'
     model_name: 'sp_coco_tf'
     #detection_threshold: 0.015
     #nms: 4
+    #sync_bn: true

@@ -22,10 +22,10 @@ data:
 model:
     name: 'superpoint' #superpoint
     using_bn: true
-    pretrained_model: './export/mg_syn_0.pth'
+    pretrained_model: './export/sp_9.pth'
     grid_size: 8
     backbone:
-        backbone_type: 'VGG' #ResNetFPN
+        backbone_type: 'VGG'
         vgg:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
@@ -33,9 +33,10 @@ model:
     des_head: #descriptor head
         feat_in_dim: 128
         feat_out_dim: 256
-    batch_size: 50
-    eval_batch_size: 50
     learning_rate: 0.001
     nms: 4
     topk: 1000
     det_thresh: 0.001 # 0.001
+    #batch_size: 50
+    #eval_batch_size: 50
+

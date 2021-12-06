@@ -40,6 +40,7 @@ data:
             valid_border_margin: 2
 model:
     name: 'magicpoint'
+    using_bn: true
     pretrained_model: 'none'
     grid_size: 8
     backbone:
@@ -48,14 +49,14 @@ model:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
         feat_in_dim: 128
-    det_thresh: 0.001 # 1/65
+    det_thresh: 0.015 # 1/65
     nms: 4
     topk: -1
 solver:
     grid_size: 8
-    epoch: 10
+    epoch: 20
     base_lr: 0.001
-    train_batch_size: 16
-    test_batch_size: 16
+    train_batch_size: 64
+    test_batch_size: 64
     save_dir: './export'
     model_name: 'mg_syn'
