@@ -77,14 +77,15 @@ def train_eval(model, dataloader, config):
                 loss.backward()
                 optimizer.step()
 
-                if (i%1000==0):
+                if (i%500==0):
                     print('Epoch [{}/{}], Step [{}/{}], LR [{}], Loss: {:.3f}'
                           .format(epoch, config['solver']['epoch'], i, len(dataloader['train']),
                                   optimizer.state_dict()['param_groups'][0]['lr'], np.mean(mean_loss)))
                     mean_loss = []
 
                 ##do evaluation
-                if (i%60000==0 and i!=0) or (i+1)==len(dataloader['train']):
+                save_iter = int(0.5*len(dataloader['train']))#half epoch
+                if (i%save_iter==0 and i!=0) or (i+1)==len(dataloader['train']):
                     model.eval()
                     eval_loss = do_eval(model, dataloader['test'], config, device)
                     model.train()
@@ -102,14 +103,17 @@ def train_eval(model, dataloader, config):
 @torch.no_grad()
 def do_eval(model, dataloader, config, device):
     mean_loss = []
+    truncate_n = max(int(0.1 * len(dataloader)), 100)  # 0.1 of test dataset for eval
+
     for ind, data in tqdm(enumerate(dataloader)):
-        if ind>5000:# cost too much time
+        if ind>truncate_n:
             break
         prob, desc, prob_warp, desc_warp = None, None, None, None
         if config['model']['name'] == 'magicpoint' and config['data']['name'] == 'coco':
-            raw_outputs = model(data['warp'])
-        else:
-            raw_outputs = model(data['raw'])
+            data['raw'] = data['warp']
+            data['warp'] = None
+
+        raw_outputs = model(data['raw'])
 
         if config['model']['name'] != 'magicpoint':
             warp_outputs = model(data['warp'])
@@ -149,7 +153,7 @@ if __name__=='__main__':
     if not os.path.exists(config['solver']['save_dir']):
         os.makedirs(config['solver']['save_dir'])
 
-    device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
 
     ##Make Dataloader
     data_loaders = None
