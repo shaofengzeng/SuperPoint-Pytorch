@@ -51,27 +51,29 @@ def detector_loss(keypoint_map, logits, valid_mask=None, grid_size=8, device='cp
     B,C,h,w = labels.shape#h=H/grid_size,w=W/grid_size
     labels = torch.cat([2*labels, torch.ones([B,1,h,w],device=device)], dim=1)
     # Add a small random matrix to randomly break ties in argmax
-    labels = torch.argmax(labels + torch.zeros(labels.shape,device=device).uniform_(0,0.1),dim=1)
+    labels = torch.argmax(labels + torch.zeros(labels.shape,device=device).uniform_(0,0.1),dim=1)#B*65*Hc*Wc
 
     # Mask the pixels if bordering artifacts appear
     valid_mask = torch.ones_like(keypoint_map) if valid_mask is None else valid_mask
     valid_mask = valid_mask.unsqueeze(1)
     valid_mask = pixel_shuffle_inv(valid_mask, grid_size)#[B, 64, H/8, W/8]
-    valid_mask = torch.prod(valid_mask, dim=1).unsqueeze(dim=1)#[B,1,H/8,W/8]
+    valid_mask = torch.prod(valid_mask, dim=1).unsqueeze(dim=1).type(torch.float32)#[B,1,H/8,W/8]
 
     ## method 1
-    #loss0 = F.cross_entropy(logits, labels)
+    ce_loss = F.cross_entropy(logits, labels, reduction='none',)
+    valid_mask = valid_mask.squeeze(dim=1)
+    loss = torch.divide(torch.sum(ce_loss * valid_mask, dim=(1, 2)), torch.sum(valid_mask + 1e-6, dim=(1, 2)))
+    loss = torch.mean(loss)
+
     ## method 2
     ## method 2 equals to tf.nn.sparse_softmax_cross_entropy()
-
-    epsilon = 1e-6
-    loss = F.log_softmax(logits,dim=1)
-    mask = valid_mask.type(torch.float32)
-    mask /= (torch.mean(mask)+epsilon)
-    loss = torch.mul(loss, mask)
-    loss = F.nll_loss(loss,labels)
+    # epsilon = 1e-6
+    # loss = F.log_softmax(logits,dim=1)
+    # mask = valid_mask.type(torch.float32)
+    # mask /= (torch.mean(mask)+epsilon)
+    # loss = torch.mul(loss, mask)
+    # loss = F.nll_loss(loss,labels)
     return loss
-
 
 def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid_mask=None, device='cpu'):
     """
@@ -153,7 +155,7 @@ def descriptor_loss(config, descriptors, warped_descriptors, homographies, valid
     positive_sum = torch.sum(valid_mask*lambda_d*s*positive_dist) / normalization
     negative_sum = torch.sum(valid_mask*(1-s)*negative_dist) / normalization
 
-    print('positive_dist:{}, negative_dist:{}'.format(positive_sum, negative_sum))
+    print('positive_dist:{:.7f}, negative_dist:{:.7f}'.format(positive_sum, negative_sum))
 
     loss = lambda_loss*torch.sum(valid_mask * loss)/normalization
 

@@ -40,7 +40,7 @@ def box_nms(prob, size=4, iou=0.1, min_prob=0.015, keep_top_k=-1):
     prob = prob.squeeze(dim=0)
 
     pts = torch.stack(torch.where(prob>=min_prob)).t()
-    boxes = torch.cat((pts-size/2.0, pts+size/2.0),dim=1).to(torch.float64)
+    boxes = torch.cat((pts-size/2.0, pts+size/2.0),dim=1).to(torch.float32)
     scores = prob[pts[:,0],pts[:,1]]
     indices = torchvision.ops.nms(boxes=boxes, scores=scores, iou_threshold=iou)
     pts = pts[indices,:]
