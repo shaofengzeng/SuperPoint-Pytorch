@@ -48,3 +48,4 @@ class MagicPoint(torch.nn.Module):
         outputs.setdefault('pred', pred)
 
         return outputs
+
