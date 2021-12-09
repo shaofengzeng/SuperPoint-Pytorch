@@ -9,8 +9,10 @@ This work is based on:
 - [pytorch-superpoint](https://github.com/eric-yyjau/pytorch-superpoint) 
 - [Kornia](https://kornia.github.io/)  
 
+# Finished (12/09/2021)
+
 # Performance
-* Detector repeatibility: xxx
+* Detector repeatibility: 0.67
 * Homography estimation on HPatches-v: 0.698
 
 # New Update (09/04/2021)
