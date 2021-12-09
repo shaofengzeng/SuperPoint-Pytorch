@@ -1,7 +1,7 @@
 data:
     name: 'hpatches'
     data_dir: './data/hpatches'
-    export_dir: './data/descriptors/hpatches/sp_p0/'
+    export_dir: './data/descriptors/hpatches/sp/'
     alteration: 'v'  # 'all' 'i' 'v'
     preprocessing:
         resize: [480, 640]  # False for coco
@@ -24,7 +24,7 @@ model:
     name: 'superpoint'
     using_bn: true
     grid_size: 8
-    pretrained_model: './export/sp_p0.pth'
+    pretrained_model: './export/sp_0.pth'
     nms: 8
     det_thresh: 0.001 #0.001
     topk: 1000
@@ -37,4 +37,4 @@ model:
         feat_in_dim: 128
     des_head: #descriptor head
         feat_in_dim: 128
-        feat_out_dim: 128 #256 for sp
+        feat_out_dim: 256

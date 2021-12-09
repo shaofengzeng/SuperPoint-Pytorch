@@ -1,10 +1,10 @@
 data:
     name: 'coco'
     resize: [240,320]
-    image_train_path: ['./data/mp_coco_tf/images/train2017',]
-    label_train_path: ['./data/mp_coco_tf/labels/train2017/',]
-    image_test_path: './data/mp_coco_tf/images/test2017/'
-    label_test_path: './data/mp_coco_tf/labels/test2017/'
+    image_train_path: ['./data/mg_syn_coco_15e-3/images/train2017',]
+    label_train_path: ['./data/mg_syn_coco_15e-3/labels/train2017/',]
+    image_test_path: './data/mg_syn_coco_15e-3/images/test2017/'
+    label_test_path: './data/mg_syn_coco_15e-3/labels/test2017/'
     augmentation:
         photometric:
             train_enable: true
@@ -66,7 +66,4 @@ solver:
     train_batch_size: 2
     test_batch_size: 2
     save_dir: './export/'
-    model_name: 'sp_coco_tf'
-    #detection_threshold: 0.015
-    #nms: 4
-    #sync_bn: true
+    model_name: 'sp'

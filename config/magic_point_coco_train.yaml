@@ -1,10 +1,10 @@
 data:
     name: 'coco'
     resize: [240,320]
-    image_train_path: ['./data/mg_syn_coco_3e-2/images/train2017/',]
-    label_train_path: ['./data/mg_syn_coco_3e-2/labels/train2017/',]
-    image_test_path: './data/mg_syn_coco_3e-2/images/test2017/'
-    label_test_path: './data/mg_syn_coco_3e-2/labels/test2017/'
+    image_train_path: ['./data/mg_syn_coco_15e-3/images/train2017/',]
+    label_train_path: ['./data/mg_syn_coco_15e-3/labels/train2017/',]
+    image_test_path: './data/mg_syn_coco_15e-3/images/test2017/'
+    label_test_path: './data/mg_syn_coco_15e-3/labels/test2017/'
     augmentation:
         photometric:
             train_enable: true
@@ -39,13 +39,14 @@ data:
             valid_border_margin: 3
 model:
     name: 'magicpoint'
+    using_bn: true
     grid_size: 8
     det_thresh: 0.001 # 1/65
     nms: 4
     topk: -1
-    pretrained_model: './export/mg_coco_0_2.097.pth'
+    pretrained_model: 'none'
     backbone:
-        backbone_type: 'VGG' #ResNetFPN
+        backbone_type: 'VGG'
         vgg:
             channels: [64,64,64,64,128,128,128,128]
     det_head: #detector head
@@ -53,7 +54,7 @@ model:
 solver:
     grid_size: 8
     epoch: 10
-    base_lr: 0.005
+    base_lr: 0.001
     train_batch_size: 32
     test_batch_size: 32
     save_dir: './export'

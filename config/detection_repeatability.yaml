@@ -1,7 +1,7 @@
 data:
     name: 'hpatches' #hpatches
     data_dir: './data/hpatches' #./data/hpatches
-    export_dir: './data/repeatibility/hpatches/sp_coco_tf_1'
+    export_dir: './data/repeatibility/hpatches/sp'
     alteration: 'all'  # 'all' 'i' 'v'
     preprocessing:
         resize: [240,320]
@@ -22,7 +22,7 @@ data:
 model:
     name: 'superpoint' #superpoint
     using_bn: true
-    pretrained_model: './export/sp_9.pth'
+    pretrained_model: './export/sp_0.pth'
     grid_size: 8
     backbone:
         backbone_type: 'VGG'
