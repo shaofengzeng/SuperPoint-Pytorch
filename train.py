@@ -57,15 +57,15 @@ def train_eval(model, dataloader, config):
 
                 raw_outputs = model(data['raw'])
 
-                ##for superpoint
-                if config['model']['name']!='magicpoint':#superpoint
+                ## for superpoint
+                if config['model']['name']!='magicpoint':#train superpoint
                     warp_outputs = model(data['warp'])
                     prob, desc, prob_warp, desc_warp = raw_outputs['det_info'], \
                                                        raw_outputs['desc_info'], \
                                                        warp_outputs['det_info'],\
                                                        warp_outputs['desc_info']
                 else:
-                    prob = raw_outputs
+                    prob = raw_outputs #train magicpoint
 
                 ##loss
                 loss = loss_func(config['solver'], data, prob, desc,
@@ -153,7 +153,7 @@ if __name__=='__main__':
     if not os.path.exists(config['solver']['save_dir']):
         os.makedirs(config['solver']['save_dir'])
 
-    device = 'cuda:3' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:2' if torch.cuda.is_available() else 'cpu'
 
     ##Make Dataloader
     data_loaders = None

@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 with open('./config/magic_point_syn_train.yaml', 'r', encoding='utf8') as fin:
     config = yaml.safe_load(fin)
 
-device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+device = 'cpu' #'cuda:2' if torch.cuda.is_available() else 'cpu'
 dataset_ = SyntheticShapes(config['data'], task='training', device=device)
 dataloader_ = DataLoader(dataset_, batch_size=1, shuffle=False, collate_fn=dataset_.batch_collator)
 

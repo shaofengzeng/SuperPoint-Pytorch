@@ -27,10 +27,8 @@ if __name__ == '__main__':
     p_dataset = PatchesDataset(config['data'], device=device)
     p_dataloader = DataLoader(p_dataset, batch_size=1, shuffle=False, collate_fn=p_dataset.batch_collator)
 
-
     net = SuperPointBNNet(config['model'], device=device, using_bn=config['model']['using_bn'])
-    #net = SuperPointNet(config['model'])
-    net.load_state_dict(torch.load(config['model']['pretrained_model']))
+    net.load_state_dict(torch.load(config['model']['pretrained_model'],map_location=device))
     net.to(device).eval()
 
     with torch.no_grad():

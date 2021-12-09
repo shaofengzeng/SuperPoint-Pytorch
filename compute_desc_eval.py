@@ -14,7 +14,7 @@ def draw_matches(data):
                            None, matchColor=(0,255,0), singlePointColor=(0, 0, 255))
 
 
-experiments = ['./data/descriptors/hpatches/sp_p0/']
+experiments = ['./data/descriptors/hpatches/sp/']
 
 #
 # num_images = 3

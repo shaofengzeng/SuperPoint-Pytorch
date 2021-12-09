@@ -10,6 +10,7 @@ from dataset.synthetic_shapes import SyntheticShapes
 from model.magic_point import MagicPoint
 from model.superpoint_bn import SuperPointBNNet
 
+
 if __name__=="__main__":
     ##
     with open('./config/detection_repeatability.yaml', 'r', encoding='utf8') as fin:
@@ -32,7 +33,7 @@ if __name__=="__main__":
     elif config['model']['name'] == 'magicpoint':
         net = MagicPoint(config['model'], device=device)
 
-    net.load_state_dict(torch.load(config['model']['pretrained_model']))
+    net.load_state_dict(torch.load(config['model']['pretrained_model'], map_location=device))
     net.to(device).eval()
 
     with torch.no_grad():

@@ -57,7 +57,7 @@ def select_top_k(prob, thresh=0, num=300):
 
 if __name__=='__main__':
 
-    experiments = ['./data/repeatibility/hpatches/sp_coco_tf_1']
+    experiments = ['./data/repeatibility/hpatches/sp']
     confidence_thresholds = [0.015, ]
 
     ## show keypoints
