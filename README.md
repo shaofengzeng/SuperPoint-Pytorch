@@ -10,6 +10,8 @@ This work is based on:
 - [Kornia](https://kornia.github.io/)  
 
 # Finished (12/09/2021)
+* However our magicpoint generally produces more points than rpautrat's model.
+  If you can solve this problem, please let me know, thanks.
 
 # Performance
 * Detector repeatibility: 0.67
