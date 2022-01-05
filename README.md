@@ -58,12 +58,12 @@ This work is based on:
           `python train.py ./config/magic_point_train.yaml`   
           (Note that you have to delete the directory _./data/synthetic_shapes_ 
           whenever you want to regenerate it)
-    - 2.2 Export coco labels (>40 hours):   
+    - 2.2 Export *coco labels data set v1* (>50 hours):   
           `python homo_export_labels.py #using your data dirs`
-    - 2.3 Train MagicPoint on coco labels data set (exported by step 2.2)       
+    - 2.3 Train MagicPoint on *coco labels data set v1* (exported by step 2.2)       
           `python train.py ./config/magic_point_coco_train.py #with correct data dirs` 
-    - 2.4 Export coco labels using the magicpoint trained by step 2.3
-    - 2.5 Train SuperPoint (>12 hours)    
+    - 2.4 Export *coco labels data set v2* using the magicpoint trained by step 2.3
+    - 2.5 Train SuperPoint using *coco labels data set v2* (>12 hours)    
           `python train.py ./config/superpoint_train.py #with correct data dirs`  
     - others. Validate detection repeatability or description  
                    
