@@ -75,7 +75,7 @@ Welcome to star this repository!
         python compute_desc_eval.py #(> 1.5 hours)
         ```   
         
-    **Descriptions of some important hyper-parameters in YAML files **
+    **Descriptions of some important hyper-parameters in YAML files**
     ```
     model
         name: superpoint # train superpoint or magicpoint?
