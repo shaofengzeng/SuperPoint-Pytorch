@@ -75,7 +75,7 @@ Welcome to star this repository!
         python compute_desc_eval.py #(> 1.5 hours)
         ```   
         
-    **Again: Please edit _*.yaml_ files to run corresponding tasks, especially for the _*path_ or _*dir_ items** 
+    **Descriptions of some important hyper-parameters in YAML files **
     ```
     model
         name: superpoint # train superpoint or magicpoint?
