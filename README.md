@@ -93,7 +93,7 @@ Welcome to star this repository!
         label_test_path: './data/mp_coco_v2/labels/test2017/'
         ...
         data_dir: './data/hpatches' #path to hpatches dataset
-        export_dir: './data/repeatibility/hpatches/sp' ##dir where to save output data
+        export_dir: './data/repeatibility/hpatches/sp' #dir where to save output data
     solver:
         model_name: sp #saved model name
     ```
