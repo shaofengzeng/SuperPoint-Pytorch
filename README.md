@@ -19,7 +19,7 @@ Welcome to star this repository!
     - Another possible way to improve performance is to set more appropriate hyper-parameters, such as `det_threshold`, `nms` and `top_k`.
 
 # New Update (09/04/2021)
-* Convert tf pretrained weight to Pytorch   
+* Convert superpoint weight proposed by rpautrat to torch format   
 * Usage:
     - 1 Construct network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
     - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
@@ -46,13 +46,13 @@ Welcome to star this repository!
     |   |   |--H_1_2
     |   |-- ...
     ```
-    You can create *soft links* if you already have *coco, hpatches* data sets, the commands are,
+    Create *soft links* if you already have *coco, hpatches* data sets, commands are like,
     ```
     cd data
     ln -s dir_to_coco ./coco
     ```
-* 2 The training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
-    **However we strongly suggest you read the scripts first so that you can give correct settings for your envs.**
+* 2 Training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
+    **However we strongly suggest you read the scripts first before training**
     - 2.0 Modify the following code in train.py, line 61, to save your models, if necessary  
           `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
     - 2.1 set proper epoch in _*.yaml_.
@@ -67,7 +67,6 @@ Welcome to star this repository!
     - 2.6 Train SuperPoint using *coco labels data set v2* (>12 hours)    
           `python train.py ./config/superpoint_train.py #with correct data dirs`  
     - others. Validate detection repeatability or description  
-                   
         ```
         python export_detections_repeatability.py #(very fast)  
         python compute_repeatability.py  #(very fast)
@@ -75,17 +74,27 @@ Welcome to star this repository!
         python export_descriptors.py #(> 5.5 hours) 
         python compute_desc_eval.py #(> 1.5 hours)
         ```   
-    **AGAIN: You have to edit _.yaml_ files to run corresponding tasks,
-     especially for the _path_ or _dir_ items** 
+        
+    **Again: Please edit _*.yaml_ files to run corresponding tasks, especially for the _*path_ or _*dir_ items** 
     ```
     model
-        name: superpoint # magicpoint
+        **name**: superpoint # train superpoint or magicpoint?
+        **pretrained_model**: None # or path to a pretrained model to load
+        **using_bn**: true # using batch normalization in the model
+        **det_thresh**: 0.001 # point confidence threshold, 1/65
+        **nms**: 4 # nms window size
+        **topk**: -1 # keep top-k points, -1, keep all
      ...
     data:
         name: coco #synthetic
-        image_train_path: ['./data/mp_coco_v2/images/train2017',] #several data sets can be list here
-        label_train_path: ['./data/mp_coco_v2/labels/train2017/',]
-        image_test_path: './data/mp_coco_v2/images/test2017/'
-        label_test_path: './data/mp_coco_v2/labels/test2017/'
+        **image_train_path**: ['./data/mp_coco_v2/images/train2017',] #several data sets can be list here
+        **label_train_path**: ['./data/mp_coco_v2/labels/train2017/',]
+        **image_test_path**: './data/mp_coco_v2/images/test2017/'
+        **label_test_path**: './data/mp_coco_v2/labels/test2017/'
+        ...
+        **data_dir**: './data/hpatches' #path to hpatches dataset
+        **export_dir**: './data/repeatibility/hpatches/sp' ##dir where to save output data
+    solver:
+        **model_name**:sp #saved model name
     ```
 
