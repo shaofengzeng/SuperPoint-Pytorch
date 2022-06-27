@@ -57,7 +57,7 @@ Welcome to star this repository!
           `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
     - 2.1 set proper epoch in _*.yaml_.
     - 2.2 Train MagicPoint (>1 hours):  
-          `python train.py ./config/magic_point_train.yaml`   
+          `python train.py ./config/magic_point_syn_train.yaml`   
           (Note that you have to delete the directory _./data/synthetic_shapes_ whenever you want to regenerate it)
     - 2.3 Export *coco labels data set v1* (>50 hours):   
           `python homo_export_labels.py #run with your data path`
