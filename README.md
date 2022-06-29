@@ -19,12 +19,12 @@ Welcome to star this repository!
     - Possible way to improve performance is to set better values for hyper-parameters, such as `det_threshold`, `nms` and `top_k`.
 
 # New Update (09/04/2021)
-* Convert superpoint weight proposed by rpautrat to torch format   
+* Convert model released by rpautrat to torch format   
 * Usage:
     - 1 Construct network by [superpoint_bn.py](model/superpoint_bn.py) (Refer to [train.py](./train.py) for more details)
     - 2 Set parameter eps=1e-3 for all the BatchNormalization functions in model/modules/cnn/*.py
     - 3 Set parameter momentum=0.01 (**not tested**)
-    - 4 Load pretrained weight [superpoint_bn.pth](./superpoint_bn.pth) and run forward propagation
+    - 4 Load pretrained model [superpoint_bn.pth](./superpoint_bn.pth) and run forward propagation
  
  
 # Usage
