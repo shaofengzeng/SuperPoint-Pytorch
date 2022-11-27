@@ -40,7 +40,7 @@ Welcome to star this repository!
     |        |-- b.jpg
     |        |-- ...
     |-- hpatches
-    |   |-- i_ajuntament
+    |   |-- i_ajustment
     |   |   |--1.ppm
     |   |   |--...
     |   |   |--H_1_2
@@ -78,10 +78,10 @@ Welcome to star this repository!
     **Descriptions of some important hyper-parameters in YAML files**
     ```
     model
-        name: superpoint # train superpoint or magicpoint?
+        name: superpoint # superpoint or magicpoint
         pretrained_model: None # or path to a pretrained model to load
-        using_bn: true # using batch normalization in the model
-        det_thresh: 0.001 # point confidence threshold, 1/65
+        using_bn: true # apply batch normalization in the model
+        det_thresh: 0.001 # point confidence threshold, default, 1/65
         nms: 4 # nms window size
         topk: -1 # keep top-k points, -1, keep all
      ...
@@ -92,9 +92,9 @@ Welcome to star this repository!
         image_test_path: './data/mp_coco_v2/images/test2017/'
         label_test_path: './data/mp_coco_v2/labels/test2017/'
         ...
-        data_dir: './data/hpatches' #path to hpatches dataset
-        export_dir: './data/repeatibility/hpatches/sp' #dir where to save output data
+        data_dir: './data/hpatches' #path to the hpatches dataset
+        export_dir: './data/repeatibility/hpatches/sp' #dir where to save the output data
     solver:
-        model_name: sp #saved model name
+        model_name: sp #Prefix of the model name you want
     ```
 
