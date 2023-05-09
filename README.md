@@ -9,6 +9,18 @@ This work is based on:
 - [pytorch-superpoint](https://github.com/eric-yyjau/pytorch-superpoint) 
 - [Kornia](https://kornia.github.io/)  
 
+# About -TODO: comment the following line if you want the same result as tf version-
+
+Please ignore the code with such comments. When i reproducing rpautrat's code, I looked at almost looked at the output results of all their key functions and attempted to strictly reproduce them through torch. However,  the two frameworks (torch and tf) are different. For example, the matrix inversion operations, the results of torch and tf are different. You can test them yourself. If I remember correctly,   
+```
+homography = np.linalg.inv(homography)  
+homography = torch.inverse(homography)  
+``` 
+These two lines is completely consistent with tf.(I don't know why,who can tell me...)  
+Therefore, it is obvious that, if you do not pursue the same result as tf, but only focus on the operation of inverse, torch can meet all your needs, which satisfies the basic fact that ((A^-1)^-1)=A   
+Of course, some functions, such as convolution operations, cannot guarantee complete consistency between tf and torch, which is also the difference between this project and the tf project.   
+
+
 # Finished (12/09/2021)
 Welcome to star this repository!
 # Performance
