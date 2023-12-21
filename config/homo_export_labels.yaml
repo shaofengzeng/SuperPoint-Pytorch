@@ -1,9 +1,9 @@
 data:
     name: 'coco'
     resize: [240,320]
-    src_image_path: './data/coco/images/test2017/'
-    dst_label_path: './data/mg_coco_coco_3e-2/labels/test2017/'
-    dst_image_path: './data/mg_coco_coco_3e-2/images/test2017/'
+    src_image_path: '/root/workspace/data/superPoint/data/coco/images/val2017'
+    dst_label_path: '/root/workspace/data/superPoint/data/mg_coco_coco_3e-2/labels/val2017/'
+    dst_image_path: '/root/workspace/data/superPoint/data/mg_coco_coco_3e-2/images/val2017/'
     homography_adaptation:
         num: 100
         aggregation: 'sum'
