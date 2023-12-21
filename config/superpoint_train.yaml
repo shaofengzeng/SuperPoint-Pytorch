@@ -1,7 +1,7 @@
 data:
     name: 'coco'
     resize: [240,320]
-    image_train_path: ['/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/images/test2017',] ['/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/images/test2017/'
+    image_train_path: ['/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/images/test2017',] 
     label_train_path: ['/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/labels/test2017',]
     image_test_path: '/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/images/val2017/'
     label_test_path: '/root/workspace/data/superPoint/data/mg_syn_coco_15e-3/labels/val2017/'
