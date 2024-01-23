@@ -17,8 +17,8 @@ class DetectorHead(torch.nn.Module):
 
         self.bnPa,self.bnPb = None,None
         if using_bn:
-            self.bnPa = torch.nn.BatchNorm2d(256, eps=1e-3)
-            self.bnPb = torch.nn.BatchNorm2d(pow(grid_size, 2)+1, eps=1e-3)
+            self.bnPa = torch.nn.BatchNorm2d(256)
+            self.bnPb = torch.nn.BatchNorm2d(pow(grid_size, 2)+1)
 
         self.softmax = torch.nn.Softmax(dim=1)
 
@@ -53,8 +53,8 @@ class DescriptorHead(torch.nn.Module):
 
         self.bnDa, self.bnDb = None, None
         if using_bn:
-            self.bnDa = torch.nn.BatchNorm2d(256, eps=1e-3)
-            self.bnDb = torch.nn.BatchNorm2d(output_channel, eps=1e-3)
+            self.bnDa = torch.nn.BatchNorm2d(256)
+            self.bnDb = torch.nn.BatchNorm2d(output_channel)
 
     def forward(self, x):
         out = None
