@@ -109,8 +109,8 @@ def sample_homography(shape, config=None, device='cpu'):
             perspective_amplitude_x = config['perspective_amplitude_x']
             perspective_amplitude_y = config['perspective_amplitude_y']
         
-        tnorm_y = stats.truncnorm(-perspective_amplitude_y/2, perspective_amplitude_y/2, loc=0, scale=perspective_amplitude_y/2)
-        tnorm_x = stats.truncnorm(-perspective_amplitude_x/2, perspective_amplitude_x/2, loc=0, scale=perspective_amplitude_x/2)
+        tnorm_y = stats.truncnorm(-2, 2, loc=0, scale=perspective_amplitude_y/2)
+        tnorm_x = stats.truncnorm(-2, 2, loc=0, scale=perspective_amplitude_x/2)
         perspective_displacement = tnorm_y.rvs(1)
         h_displacement_left = tnorm_x.rvs(1)
         h_displacement_right = tnorm_x.rvs(1)
