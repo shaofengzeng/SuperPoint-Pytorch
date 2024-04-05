@@ -108,9 +108,12 @@ def sample_homography(shape, config=None, device='cpu'):
         else:
             perspective_amplitude_x = config['perspective_amplitude_x']
             perspective_amplitude_y = config['perspective_amplitude_y']
-        perspective_displacement = truncnorm(-std_trunc, std_trunc, loc=0., scale=perspective_amplitude_y/2).rvs(1)
-        h_displacement_left = truncnorm(-std_trunc, std_trunc, loc=0., scale=perspective_amplitude_x/2).rvs(1)
-        h_displacement_right = truncnorm(-std_trunc, std_trunc, loc=0., scale=perspective_amplitude_x/2).rvs(1)
+        
+        tnorm_y = stats.truncnorm(-perspective_amplitude_y/2, perspective_amplitude_y/2, loc=0, scale=perspective_amplitude_y/2)
+        tnorm_x = stats.truncnorm(-perspective_amplitude_x/2, perspective_amplitude_x/2, loc=0, scale=perspective_amplitude_x/2)
+        perspective_displacement = tnorm_y.rvs(1)
+        h_displacement_left = tnorm_x.rvs(1)
+        h_displacement_right = tnorm_x.rvs(1)
         pts2 += np.array([[h_displacement_left, perspective_displacement],
                           [h_displacement_left, -perspective_displacement],
                           [h_displacement_right, perspective_displacement],
@@ -119,7 +122,10 @@ def sample_homography(shape, config=None, device='cpu'):
     # Random scaling
     # sample several scales, check collision with borders, randomly pick a valid one
     if config['scaling']:
-        scales = truncnorm(-std_trunc, std_trunc, loc=1, scale=config['scaling_amplitude']/2).rvs(config['n_scales'])
+        mu, sigma = 1, _config['scaling_amplitude']/2
+        lower, upper = mu - 2 * sigma, mu + 2 * sigma
+        tnorm_s = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+        scales = tnorm_s.rvs(_config['n_scales'])
         #scales = np.random.uniform(0.8, 2, config['n_scales'])
         scales = np.concatenate((np.array([1]), scales), axis=0)
 
