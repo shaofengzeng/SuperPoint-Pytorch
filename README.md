@@ -41,9 +41,7 @@ This work is based on:
     ln -s dir_to_coco ./coco
     ```
 * 2 Training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
-    **However we strongly suggest you read the scripts first before training**
-    - 2.0 Modify the following code in train.py, to save your models, if necessary  
-          `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
+    **However we strongly suggest you read the scripts first before training** 
     - 2.1 set proper values for training epoch in _*.yaml_.
     - 2.2 Train MagicPoint (>1 hours):  
           `python train.py ./config/magic_point_syn_train.yaml`   
