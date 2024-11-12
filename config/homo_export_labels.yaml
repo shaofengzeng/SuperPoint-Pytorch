@@ -1,9 +1,9 @@
 data:
     name: 'coco'
     resize: [240,320]
-    src_image_path: './data/coco/images/test2017/'
-    dst_label_path: './data/mg_coco_coco_3e-2/labels/test2017/'
-    dst_image_path: './data/mg_coco_coco_3e-2/images/test2017/'
+    src_image_path: '/home/work/coco/val2017'
+    dst_label_path: './data/mg_coco/labels/val2017/'
+    dst_image_path: './data/mg_coco/images/val2017/'
     homography_adaptation:
         num: 100
         aggregation: 'sum'
@@ -27,7 +27,7 @@ model:
     det_thresh: 0.015 #0.015
     nms: 4
     topk: 0
-    pretrained_model: './export/mg_syn_19.pth'
+    pretrained_model: './export/mg_syn_18.pth'
     backbone:
         backbone_type: 'VGG'
         vgg:
