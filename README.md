@@ -12,7 +12,7 @@ This work is based on:
 - [Kornia](https://kornia.github.io/)  
 
 
-# new Update (12/11/2024)
+# New Update (12/11/2024)
 * using numpy for perspective transform
 
  
