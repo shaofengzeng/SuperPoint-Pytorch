@@ -20,19 +20,9 @@ class PhotoAugmentor:
 
         self.brightness_max_change = config['params']['random_brightness']['max_abs_change']
         self.contrast_factors = tuple(config['params']['random_contrast']['strength_range'])
-        # self.colorjitter_brightness = transforms.ColorJitter(
-        #     brightness=config['params']['random_brightness']['max_abs_change']
-        # )
-        # self.colorjitter_contrast = transforms.ColorJitter(
-        #     contrast=tuple(config['params']['random_contrast']['strength_range'])
-        # )
 
     def additive_gaussian_noise(self, image):
         stddev_range = self.config['params']['additive_gaussian_noise']['stddev_range']
-
-        # stddev = tf.random_uniform((), *stddev_range)
-        # noise = tf.random_normal(tf.shape(image), stddev=stddev)
-        # noisy_image = tf.clip_by_value(image + noise, 0, 255)
         stddev = np.random.uniform(stddev_range[0], stddev_range[1])
         noise = np.random.normal(scale=stddev,size=image.shape)
         noisy_image = np.clip(image+noise, 0, 255)
@@ -41,11 +31,6 @@ class PhotoAugmentor:
 
     def additive_speckle_noise(self, image):
         prob_range = self.config['params']['additive_speckle_noise']['prob_range']
-
-        # prob = tf.random_uniform((), *prob_range)
-        # sample = tf.random_uniform(tf.shape(image))
-        # noisy_image = tf.where(sample <= prob, tf.zeros_like(image), image)
-        # noisy_image = tf.where(sample >= (1. - prob), 255.*tf.ones_like(image), noisy_image)
         prob = np.random.uniform(prob_range[0], prob_range[1])
         sample = np.random.uniform(size=image.shape)
         noisy_image = np.where(sample<=prob, np.zeros_like(image), image)
@@ -55,13 +40,6 @@ class PhotoAugmentor:
 
 
     def random_brightness(self, image):
-        # if not isinstance(image.dtype, np.uint8):
-        #     image = image.round().astype(np.uint8)
-        # if isinstance(image, np.ndarray):
-        #     image = Image.fromarray(image)
-        # image = self.colorjitter_brightness(image)
-        # image = np.asarray(image)  # to numpy
-
         delta = np.random.uniform(low=-self.brightness_max_change,high=self.brightness_max_change, size=1)[0]
         image = image + delta
         image = np.clip(image, 0, 255.0)
@@ -69,13 +47,6 @@ class PhotoAugmentor:
 
 
     def random_contrast(self, image):
-        # if not isinstance(image.dtype, np.uint8):
-        #     image = image.round().astype(np.uint8)
-        # if isinstance(image, np.ndarray):
-        #     image = Image.fromarray(image)
-        # image = self.colorjitter_contrast(image)
-        # image = np.asarray(image)#to numpy
-
         contrast_factor = np.random.uniform(low=self.contrast_factors[0],
                                             high=self.contrast_factors[1],
                                             size=1)[0]
@@ -116,7 +87,6 @@ class PhotoAugmentor:
 
         return np.clip(res.round(),0,255)
 
-
     def motion_blur(self, image):
         max_kernel_size = self.config['params']['motion_blur']['max_kernel_size']
         def _py_motion_blur(img):
@@ -141,8 +111,6 @@ class PhotoAugmentor:
             img = cv2.filter2D(img, -1, kernel)
             return img
 
-        # blurred = tf.py_func(_py_motion_blur, [image], tf.float32)
-        # tf.reshape(blurred, tf.shape(image))
         blurred = _py_motion_blur(image)
         res = np.reshape(blurred, image.shape)
         return np.clip(res,0,255)
@@ -153,25 +121,32 @@ class PhotoAugmentor:
         indices = np.arange(len(self.primitives))
         np.random.shuffle(indices)
 
-        # if image.dtype!=np.uint8:
-        #     image = image.astype(np.int).astype(np.uint8)
         for i in indices:
             image = getattr(self, self.primitives[i])(image)
 
-        return image.astype(np.float32)
+        image = np.round(image)
+        image = np.clip(image, 0, 255).astype(np.uint8)
+        return image
 
 
 if __name__=='__main__':
-    from PIL import Image
     import matplotlib.pyplot as plt
     import yaml
-    img = Image.open('../../data/synthetic_shapes/draw_cube/images/training/0.png')
-    img = np.array(img)
-    print(type(img))
-    #
-    config_path = '../../configs/magic-point_shapes.yaml'
-    with open(config_path, 'r') as f:
-        config = yaml.load(f)
+
+    for i in range(10000):
+        img = cv2.imread('D:\\cat.jpg',0)
+
+        config_path = '../../config/magic_point_syn_train.yaml'
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+        config = config['data']['augmentation']['photometric']
+
+        pa = PhotoAugmentor(config)
+
+        img = pa(img)
+        plt.imshow(img)
+        plt.show()
+    print("Test Done")
 
 
 
