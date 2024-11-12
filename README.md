@@ -13,7 +13,7 @@ This work is based on:
 
 
 # new Update (12/11/2024)
-* Remove Kornia
+* using numpy for perspective transform
 
  
 # Usage
