@@ -1,3 +1,5 @@
+import random
+
 import torch
 import cv2
 import numpy as np
@@ -17,7 +19,7 @@ class SyntheticShapes(Dataset):
         'truncate': {},
         'validation_size': -1,
         'test_size': -1,
-        'on-the-fly': False,
+        'on-the-fly': True,
         'cache_in_memory': False,
         'suffix': None,
         'add_augmentation_to_test_set': False,
@@ -134,69 +136,97 @@ class SyntheticShapes(Dataset):
         return len(self.samples)
 
 
+    def on_the_fly(self,):
+        primitives = parse_primitives(self.config['primitives'], self.drawing_primitives)
+        primitive = random.choice(primitives)
+        image = synthetic_dataset.generate_background(
+            self.config['generation']['image_size'],
+            **self.config['generation']['params']['generate_background'])
+        points = np.array(getattr(synthetic_dataset, primitive)(
+            image, **self.config['generation']['params'].get(primitive, {})))
+        points = np.flip(points, 1)#reverse convention with opencv
+
+        b = self.config['preprocessing']['blur_size']
+        image = cv2.GaussianBlur(image, (b, b), 0)
+        points = (points * np.array(self.config['preprocessing']['resize'], float)
+                  / np.array(self.config['generation']['image_size'], float))
+        image = cv2.resize(image, tuple(self.config['preprocessing']['resize'][::-1]),
+                           interpolation=cv2.INTER_LINEAR)
+
+        return image, points
+
+
     def __getitem__(self, idx):
-        img_path = self.samples[idx]['image']
-        pts_path = self.samples[idx]['point']
-        #
-        img = cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)#shape=(h,w)
-        pts = np.load(pts_path)  # attention: each point is a (y,x) formated vector
 
-        img_tensor = torch.as_tensor(img, device=self.device, dtype=torch.float32)#HW
-        pts = torch.as_tensor(pts, dtype=torch.float32, device=self.device)#N2
-        kp_map = compute_keypoint_map(pts, img_tensor.shape, device=self.device)#HW
-        valid_mask = torch.ones_like(img_tensor)#HW
-        homography = torch.eye(3, device=self.device)#3,3
+        if not self.config['on-the-fly']:
+            img_path = self.samples[idx]['image']
+            pts_path = self.samples[idx]['point']
+            img = cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)#shape=(h,w)
+            pts = np.load(pts_path)  #  (y,x) formated vector
+        else:
+            img, pts = self.on_the_fly()
+
+        # #debug
+        # for pt in pts:
+        #     img = cv2.circle(img, (int(pt[1]),int(pt[0])),2, (0,255,0),1,1)
+        # cv2.imshow("debug", img)
+        # cv2.waitKey()
+        # print(pts)
 
 
-        data = {'raw':{'img':img_tensor,#H,W
-                       'kpts':pts,#N,2
-                       'kpts_map':kp_map,#H,W
+        H,W = img.shape
+
+        if self.config['augmentation']['photometric']['enable']:#image augmentation
+            img = self.photo_aug(img)
+            pts_map = compute_keypoint_map(pts, (H,W))
+            valid_mask = np.ones((H,W),dtype=int)
+            homography = np.eye(3,dtype=np.float32)
+
+        if self.config['augmentation']['homographic']['enable']:##homographic augmentation
+            img, pts, pts_map, valid_mask, homography = homographic_aug_pipline(img, pts, self.config['augmentation']['homographic'])
+
+
+        data = {'raw':{'img':img.astype(np.float32),#H,W
+                       'kpts':pts.astype(np.float32),#N,2, yx format
+                       'kpts_map':pts_map,#H,W
                        'mask':valid_mask,#H,W
                         },
                 'homography': homography}#3,3
 
-
-        if self.config['augmentation']['photometric']['enable']:#image augmentation
-            photo_img = data['raw']['img'].cpu().numpy().round().astype(np.uint8)
-            photo_img = self.photo_aug(photo_img)
-            data['raw']['img'] = torch.as_tensor(photo_img, device=self.device, dtype=torch.float32)
-
-        #augmentations
-        if self.config['augmentation']['homographic']['enable']:##homographic augmentation
-            # input format img:[1,1,H,W], point:[N,2]
-            homo_data = homographic_aug_pipline(data['raw']['img'].unsqueeze(0).unsqueeze(0), data['raw']['kpts'],
-                                                self.config['augmentation']['homographic'], device=self.device)
-            data['raw'] = homo_data['warp']
-            data['homography'] = homo_data['homography']
-
         ##normalize
-        data['raw']['img'] = data['raw']['img']/255.#1,H,w
+        data['raw']['img'] = data['raw']['img']/255.
 
-        return data #img:H,W kpts:N,2 kpts_map:H,W mask:H,W homography:3,3
+        return data
 
     def batch_collator(self, samples):
         """
         :param samples:a list, each element is a dict with keys
-        like `image`, `image_name`, `point`, `keypoint_map`,
-        `valid_mask`, `homography`...
+        like `image`, `mask`, `homography`...
         Note that image_name and point cannot be batch as a tensor,
         so will be kept as list
         :return:
         """
         assert(len(samples)>0 and isinstance(samples[0], dict))
         batch = {'raw':{'img':[], 'kpts':[], 'kpts_map':[], 'mask':[]}, 'homography':[]}
-        ##
+
         for item in samples:
             batch['raw']['img'].append(item['raw']['img'])
             batch['raw']['kpts'].append(item['raw']['kpts'])
             batch['raw']['kpts_map'].append(item['raw']['kpts_map'])
             batch['raw']['mask'].append(item['raw']['mask'])
             batch['homography'].append(item['homography'])
-        ##
-        batch['raw']['img'] = torch.stack(batch['raw']['img']).unsqueeze(dim=1)#BCHW
-        batch['raw']['kpts_map'] = torch.stack(batch['raw']['kpts_map'])#BHW
-        batch['raw']['mask'] = torch.stack(batch['raw']['mask'])#BHW
-        batch['homography'] = torch.stack(batch['homography'])#BHW
+
+        batch['raw']['img'] = np.stack(batch['raw']['img'])#BHW
+        batch['raw']['kpts_map'] = np.stack(batch['raw']['kpts_map'])#BHW
+        batch['raw']['mask'] = np.stack(batch['raw']['mask'])#BHW
+        batch['homography'] = np.stack(batch['homography'])#BHW
+
+        #to tensor
+        batch['raw']['img'] = torch.tensor(batch['raw']['img'][:,np.newaxis,:,:], dtype=torch.float32, device=self.device)#B1HW
+        batch['raw']['kpts_map'] = torch.tensor(batch['raw']['kpts_map'], dtype=torch.float32, device=self.device)#BHW
+        batch['raw']['mask'] = torch.tensor(batch['raw']['mask'], dtype=torch.float32, device=self.device)#BHW
+        batch['homography'] = torch.tensor(batch['homography'], dtype=torch.float32, device=self.device)#B33
+
         return batch
 
 
@@ -207,20 +237,20 @@ if __name__=="__main__":
     import matplotlib.pyplot as plt
 
     config_file = '../config/magic_point_syn_train.yaml'
-    device = 'cpu'#'cuda:3' if torch.cuda.is_available() else 'cpu'
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     with open(config_file, 'r') as fin:
         config = yaml.safe_load(fin)
 
     syn_datasets = {'train': SyntheticShapes(config['data'], task=['training', 'validation'], device=device),
                     'test': SyntheticShapes(config['data'], task=['test', ], device=device)}
-    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=2, shuffle=True,
+    data_loaders = {'train': DataLoader(syn_datasets['train'], batch_size=1, shuffle=True,
                                         collate_fn=syn_datasets['train'].batch_collator),
-                    'test': DataLoader(syn_datasets['test'], batch_size=2, shuffle=True,
+                    'test': DataLoader(syn_datasets['test'], batch_size=1, shuffle=True,
                                        collate_fn=syn_datasets['test'].batch_collator)}
     for i, d in enumerate(data_loaders['train']):
-        if i >= 10:
+        if i >= 100:
             break
-        img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(np.int).astype(np.uint8)
+        img = (d['raw']['img'][0] * 255).cpu().numpy().squeeze().astype(int).astype(np.uint8)
         img = cv2.merge([img, img, img])
         ##
         kpts = np.where(d['raw']['kpts_map'][0].squeeze().cpu().numpy())
@@ -228,14 +258,15 @@ if __name__=="__main__":
         kpts = np.round(kpts).astype(np.int)
         for kp in kpts:
             cv2.circle(img, (kp[1], kp[0]), radius=3, color=(0, 255, 0))
+        print("points on the image")
+        print(kpts)
 
-        mask = d['raw']['mask'][0].cpu().numpy().squeeze().astype(np.int).astype(np.uint8)*255
-
-        img = cv2.resize(img, (img.shape[1] * 2, img.shape[0] * 2))
+        mask = d['raw']['mask'][0].cpu().numpy().squeeze().astype(int).astype(np.uint8)*255
 
         plt.subplot(1, 2, 1)
         plt.imshow(img)
         plt.subplot(1, 2, 2)
         plt.imshow(mask)
         plt.show()
+        print("show one")
 
