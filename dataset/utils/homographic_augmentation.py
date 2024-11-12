@@ -3,81 +3,57 @@
 import cv2
 from math import pi
 from numpy.random import uniform
-from scipy.stats import truncnorm
-import kornia
+from scipy import stats
 from utils.params import dict_update
-from utils.tensor_op import erosion2d
 from utils.keypoint_op import *
 from imgaug import augmenters as iaa
 
 
 
-def homographic_aug_pipline(img, pts, config, device='cpu'):
+def homographic_aug_pipline(img, pts, config):
     """
-    :param img: [1,1,H,W]
-    :param pts:[N,2]
-    :param config:parameters
-    :param device: cpu or cuda
-    :return:
+    :param img: np.array, H*W
+    :param pts: np.array,N*2,yx format
     """
-    if len(img.shape)==2:
-        img = img.unsqueeze(dim=0).unsqueeze(dim=0)
-    image_shape = img.shape[2:]#HW
-    homography = sample_homography(image_shape, config['params'], device=device)
-    ##
-    #warped_image = cv2.warpPerspective(img, homography, tuple(image_shape[::-1]))
-    warped_image = kornia.warp_perspective(img, homography, image_shape, align_corners=True)
+    H,W = img.shape
 
-    warped_valid_mask = compute_valid_mask(image_shape, homography, config['valid_border_margin'], device=device)
+    homography = sample_homography((H,W), config['params'])
+    warped_image = cv2.warpPerspective(img, homography, (W,H))
 
-    warped_points = warp_points(pts, homography, device=device)
-    warped_points = filter_points(warped_points, image_shape, device=device)
-    warped_points_map = compute_keypoint_map(warped_points, img.shape[2:], device=device)
+    warped_valid_mask = compute_valid_mask((H,W), homography, config['valid_border_margin'])
 
-    return {'warp':{'img': warped_image.squeeze(),
-                    'kpts': warped_points,
-                    'kpts_map': warped_points_map.squeeze(),#some point maybe filtered
-                    'mask':warped_valid_mask.squeeze()},
-            'homography':homography.squeeze(),
-            }
-    #return warpped_image, warped_points, valid_mask, homography
+    warped_points = warp_points(pts, homography)
+    warped_points = filter_points(warped_points, (H,W))
+    warped_points_map = compute_keypoint_map(warped_points, (H,W))
+
+    return warped_image, warped_points, warped_points_map, warped_valid_mask, homography
 
 
-
-def compute_valid_mask(image_shape, homographies, erosion_radius=0, device='cpu'):
+def compute_valid_mask(shape, homography, erosion_radius=0):
     """
     Compute a boolean mask of the valid pixels resulting from an homography applied to
     an image of a given shape. Pixels that are False correspond to bordering artifacts.
     A margin can be discarded using erosion.
 
     Arguments:
-        input_shape: `[H, W]`, tuple, list or ndarray
-        homography: B*3*3 homography
+        shape: `[H, W]`, tuple, list or ndarray
+        homography: 3*3 homography
         erosion_radius: radius of the margin to be discarded.
 
     Returns: mask with values 0 or 1
     """
-    if len(homographies.shape)==2:
-        homographies = homographies.unsqueeze(0)
-    # TODO:uncomment this line if your want to get same result as tf version
-    # homographies = torch.linalg.inv(homographies)
-    B = homographies.shape[0]
-    img_one = torch.ones(tuple([B,1,*image_shape]),device=device, dtype=torch.float32)#B,C,H,W
-    mask = kornia.warp_perspective(img_one, homographies, tuple(image_shape), align_corners=True)
-    mask = mask.round()#B1HW
-    #mask = cv2.warpPerspective(np.ones(image_shape), homography, dsize=tuple(image_shape[::-1]))#dsize=tuple([w,h])
+    H,W = shape
+    img_one = np.ones(shape,dtype=homography.dtype)
+    mask = cv2.warpPerspective(img_one, homography, (W,H))
+    #TODO: 是否及何时需要round
+    mask = mask.round()
     if erosion_radius > 0:
-        # TODO: validation & debug
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (erosion_radius*2,)*2)
-        kernel = torch.as_tensor(kernel[np.newaxis,:,:],device=device)
-        _, kH, kW = kernel.shape
-        origin = ((kH-1)//2, (kW-1)//2)
-        mask = erosion2d(mask, torch.flip(kernel, dims=[1,2]), origin=origin) + 1.# flip kernel so perform as tf.nn.erosion2d
-
-    return mask.squeeze(dim=1)#BHW
+        mask = cv2.erode(mask, kernel, iterations=1)
+    return mask
 
 
-def sample_homography(shape, config=None, device='cpu'):
+def sample_homography(shape, config=None):
 
     default_config = {'perspective':True, 'scaling':True, 'rotation':True, 'translation':True,
     'n_scales':5, 'n_angles':25, 'scaling_amplitude':0.2, 'perspective_amplitude_x':0.1,
@@ -122,10 +98,10 @@ def sample_homography(shape, config=None, device='cpu'):
     # Random scaling
     # sample several scales, check collision with borders, randomly pick a valid one
     if config['scaling']:
-        mu, sigma = 1, _config['scaling_amplitude']/2
+        mu, sigma = 1, config['scaling_amplitude']/2
         lower, upper = mu - 2 * sigma, mu + 2 * sigma
         tnorm_s = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-        scales = tnorm_s.rvs(_config['n_scales'])
+        scales = tnorm_s.rvs(config['n_scales'])
         #scales = np.random.uniform(0.8, 2, config['n_scales'])
         scales = np.concatenate((np.array([1]), scales), axis=0)
 
@@ -174,21 +150,8 @@ def sample_homography(shape, config=None, device='cpu'):
 
     # this homography is the same with tf version and this line
     homography = cv2.getPerspectiveTransform(np.float32(pts1), np.float32(pts2))
-    homography = torch.tensor(homography,device=device, dtype=torch.float32).unsqueeze(dim=0)
-    ## equals to the following 3 lines
-    # pts1 = torch.tensor(pts1[np.newaxis,:], device=device, dtype=torch.float32)
-    # pts2 = torch.tensor(pts2[np.newaxis,:], device=device, dtype=torch.float32)
-    # homography0 = kornia.get_perspective_transform(pts1, pts2)
-
-    #TODO: comment the follwing line if you want same result as tf version
-    # since if we use homography directly ofr opencv function, for example warpPerspective
-    # the result we get is different from tf version. In order to get a same result, we have to
-    # apply inverse operation,like this
-    #homography = np.linalg.inv(homography)
-    homography = torch.inverse(homography)#inverse here to be consistent with tf version
-    #debug
-    #homography = torch.eye(3,device=device).unsqueeze(dim=0)
-    return homography#[1,3,3]
+    #homography = [[1., 0., 0.],[0.,1.0,0.],[0.,0.,1.0]]
+    return homography.astype(np.float32)#[3,3]
 
 
 def ratio_preserving_resize(img, target_size):
@@ -214,7 +177,14 @@ def ratio_preserving_resize(img, target_size):
 
 
 if __name__=='__main__':
-    pass
+    h = sample_homography([7,7], config=None)
+    ones = np.ones((7,7),np.uint8)*255
+    wones = cv2.warpPerspective(ones, h, (7,7))
+    print(wones)
+    mask = compute_valid_mask((7,7), h,0)
+
+
+    print(mask)
 
 
 
