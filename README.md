@@ -1,6 +1,8 @@
 # SuperPoint-Pytorch (A Pure Pytorch Implementation)
 SuperPoint: Self-Supervised Interest Point Detection and Description  
 
+Welcome to star this repository!
+
 
 # Thanks  
 This work is based on:  
@@ -11,8 +13,6 @@ This work is based on:
 
 
 # new Update (12/11/2024)
-Welcome to star this repository!
-# Performance
 * Remove Kornia
 
  
