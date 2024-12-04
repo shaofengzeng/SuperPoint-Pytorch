@@ -14,7 +14,7 @@ def draw_matches(data):
                            None, matchColor=(0,255,0), singlePointColor=(0, 0, 255))
 
 
-experiments = ['./data/descriptors/hpatches/sp/']
+experiments = ['./data/descriptors/hpatches/sp_v1']
 
 #
 # num_images = 3
@@ -55,4 +55,3 @@ for exp in experiments:
 #     correctness = ev.homography_estimation(exp, keep_k_points=1000, correctness_thresh=3, orb=orb)
 #     print('> {}: {}'.format(exp, correctness))
 
-##> ./data/descriptors/hpatches/: 0.7155172413793104
