@@ -1,7 +1,7 @@
 data:
     name: 'hpatches'
-    data_dir: './data/hpatches'
-    export_dir: './data/descriptors/hpatches/sp/'
+    data_dir: 'D:\data\hpatches_sequences'
+    export_dir: './data/descriptors/hpatches/sp_v1/'
     alteration: 'v'  # 'all' 'i' 'v'
     preprocessing:
         resize: [480, 640]  # False for coco
@@ -24,7 +24,7 @@ model:
     name: 'superpoint'
     using_bn: true
     grid_size: 8
-    pretrained_model: './export/sp_0.pth'
+    pretrained_model: './export/sp_v1.pth'
     nms: 8
     det_thresh: 0.001 #0.001
     topk: 1000
