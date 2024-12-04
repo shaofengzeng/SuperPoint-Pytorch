@@ -1,8 +1,8 @@
 data:
     name: 'hpatches' #hpatches
-    data_dir: './data/hpatches' #./data/hpatches
-    export_dir: './data/repeatibility/hpatches/sp'
-    alteration: 'all'  # 'all' 'i' 'v'
+    data_dir: 'D:\data\hpatches_sequences'
+    export_dir: './data/repeatibility/hpatches/sp_v1'
+    alteration: 'v'  # 'all' 'i' 'v'
     preprocessing:
         resize: [240,320]
     homography_adaptation:
@@ -20,9 +20,9 @@ data:
             allow_artifacts: true
             patch_ratio: 0.5
 model:
-    name: 'superpoint' #superpoint
+    name: 'superpoint' #superpoint,magicpoint
     using_bn: true
-    pretrained_model: './export/sp_0.pth'
+    pretrained_model: './export/sp_v1.pth'
     grid_size: 8
     backbone:
         backbone_type: 'VGG'
@@ -37,6 +37,4 @@ model:
     nms: 4
     topk: 1000
     det_thresh: 0.001 # 0.001
-    #batch_size: 50
-    #eval_batch_size: 50
 
