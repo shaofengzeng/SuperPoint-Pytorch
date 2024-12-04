@@ -14,7 +14,7 @@ A good magicpoint which can generate repeatable keypoints is important for super
 
 
 # Result
-__Note that we train all the models on coco 2017 test set, and test them on val set.__
+__Note that the results of superpoint (rpautrat) are copied from [here] (https://github.com/rpautrat/SuperPoint/tree/master). However our model is trained on coco 2017 test set__
 
 ### Detector evaluation
 Repeatability on HPatches computed with 300 points detected in common between pairs of images and with a NMS of 4:
