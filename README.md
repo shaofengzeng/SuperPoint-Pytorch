@@ -1,8 +1,6 @@
 # SuperPoint-Pytorch (A Pure Pytorch Implementation)
 SuperPoint: Self-Supervised Interest Point Detection and Description  
 
-Welcome to star this repository!
-
 
 # Thanks  
 This work is based on:  
@@ -11,11 +9,59 @@ This work is based on:
 - [pytorch-superpoint](https://github.com/eric-yyjau/pytorch-superpoint) 
 - [Kornia](https://kornia.github.io/)  
 
+# Training suggestions
+A good magicpoint which can generate repeatable keypoints is important for superpoint 
 
-# New Update (12/11/2024)
-* using numpy for perspective transform
 
+# Result
+__Note that we train all the models on coco 2017 test set, and test them on val set.__
+
+### Detector evaluation
+Repeatability on HPatches computed with 300 points detected in common between pairs of images and with a NMS of 4:
+ <table style="width:100%">
+  <tr>
+    <th></th>
+    <th>Illumination</th>
+    <th>Viewpoint</th>
+  </tr>
+  <tr>
+    <td>Superpoint (rpautrat)</td>
+    <td>0.662</td>
+    <td>0.674</td>
+  </tr>
+  <tr>
+    <td>Our</td>
+    <td>0.653</td>
+    <td>0.651</td>
+  </tr>
+</table>
+
+ ### Descriptors evaluation
+Homography estimation on HPatches computed with a maximum of 1000 points detected in common between pairs of images, a threshold of correctness of 3 and with a NMS of 8:
+ <table style="width:100%">
+  <tr>
+    <th></th>
+    <th>Illumination</th>
+    <th>Viewpoint</th>
+  </tr>
+  <tr>
+    <td>SuperPoint (rpautrat)</td>
+    <td>0.965</td>
+    <td>0.712</td>
+  </tr>
+  <tr>
+    <td>Our</td>
+    <td>0.933</td>
+    <td>0.688</td>
+  </tr>
+</table>
  
+
+
+
+
+
+
 # Usage
 * 0 Update your repository to the latested version (if you have pulled it before)
 * 1 Prepare your data. Make directories *data* and *export*. The data directory should look like,
@@ -41,7 +87,9 @@ This work is based on:
     ln -s dir_to_coco ./coco
     ```
 * 2 Training steps are much similar to [rpautrat/Superpoint](https://github.com/rpautrat/SuperPoint). 
-    **However we strongly suggest you read the scripts first before training** 
+    **However we strongly suggest you read the scripts first before training**
+    - 2.0 Modify the following code in train.py, to save your models, if necessary  
+          `if (i%118300==0 and i!=0) or (i+1)==len(dataloader['train']):`  
     - 2.1 set proper values for training epoch in _*.yaml_.
     - 2.2 Train MagicPoint (>1 hours):  
           `python train.py ./config/magic_point_syn_train.yaml`   
